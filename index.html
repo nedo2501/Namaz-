@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nauči Namaz</title>
+
+<!-- PWA Meta Tags -->
+<meta name="application-name" content="Nauči Namaz">
+<meta name="description" content="Interaktivni vodič za učenje svih pet dnevnih namaza sa ilustracijama i vaktijom za Bosansku Krupu">
+<meta name="theme-color" content="#080C16">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nauči Namaz">
+<meta name="msapplication-TileColor" content="#080C16">
+<meta name="msapplication-TileImage" content="icons/icon-144x144.png">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Nauči Namaz">
+<meta property="og:description" content="Interaktivni vodič za klanjanje svih namaza">
+<meta property="og:type" content="website">
+
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #8B6914;
+  --bg: #080C16; --card: #0F1624; --card2: #141D2E;
+  --teal: #1A7A6E; --teal-light: #26A99A;
+  --text: #EDE8DC; --dim: #7A7060;
+  --border: rgba(201,168,76,0.12);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+/* ── STARS ── */
+#stars { position:fixed; inset:0; pointer-events:none; z-index:0; }
+.s { position:absolute; border-radius:50%; background:#fff; animation:tw var(--d) ease-in-out infinite var(--dl); opacity:0; }
+@keyframes tw { 0%,100%{opacity:0;transform:scale(.4)} 50%{opacity:var(--o);transform:scale(1)} }
+
+/* ── HEADER ── */
+header { position:relative; z-index:10; text-align:center; padding:44px 20px 24px; }
+.bismillah { font-family:'Amiri',serif; font-size:clamp(1.4rem,4vw,2.2rem); color:var(--gold); opacity:.55; margin-bottom:14px; }
+.main-title { font-family:'Amiri',serif; font-size:clamp(1.8rem,5vw,3rem); color:var(--gold); text-shadow:0 0 40px rgba(201,168,76,.4); margin-bottom:4px; }
+.subtitle { font-size:.8rem; color:var(--dim); letter-spacing:4px; text-transform:uppercase; }
+.hdiv { width:180px; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:18px auto; }
+
+/* ── NAV ── */
+.prayer-nav { position:relative; z-index:10; display:flex; justify-content:center; flex-wrap:wrap; gap:10px; padding:0 16px 24px; max-width:900px; margin:0 auto; }
+.pb { background:var(--card); border:1px solid var(--border); color:var(--dim); padding:10px 20px; border-radius:40px; cursor:pointer; font-family:'Tajawal',sans-serif; font-size:.88rem; font-weight:500; transition:all .25s; }
+.pb:hover { border-color:rgba(201,168,76,.4); color:var(--text); }
+.pb.active { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,.06); box-shadow:0 0 18px rgba(201,168,76,.15); }
+.rc { display:inline-block; background:rgba(201,168,76,.12); color:var(--gold-light); font-size:.68rem; padding:1px 7px; border-radius:10px; margin-left:5px; }
+
+/* ── TIP BANNER ── */
+.tip-banner { position:relative; z-index:10; max-width:780px; margin:0 auto 20px; padding:0 16px; }
+.tip-inner { background:linear-gradient(135deg,rgba(26,122,110,.12),rgba(201,168,76,.06)); border:1px solid rgba(26,122,110,.25); border-radius:12px; padding:12px 18px; display:flex; align-items:flex-start; gap:12px; font-size:.83rem; color:var(--dim); line-height:1.55; }
+.tip-icon { font-size:1.1rem; flex-shrink:0; margin-top:1px; }
+
+/* ── MAIN ── */
+.main { position:relative; z-index:10; max-width:780px; margin:0 auto; padding:0 16px 60px; }
+
+/* ── PRAYER INFO CARD ── */
+.pinfo { background:linear-gradient(135deg,var(--card),var(--card2)); border:1px solid var(--border); border-radius:18px; padding:26px; margin-bottom:24px; display:flex; align-items:flex-start; gap:24px; position:relative; overflow:hidden; }
+.pinfo::after { content:''; position:absolute; top:-60px; right:-60px; width:220px; height:220px; background:radial-gradient(circle,rgba(26,122,110,.08) 0%,transparent 70%); pointer-events:none; }
+.picon { font-size:3.2rem; flex-shrink:0; }
+.pinfo-text h2 { font-family:'Amiri',serif; font-size:1.7rem; color:var(--gold); margin-bottom:3px; }
+.pinfo-ar { font-family:'Amiri',serif; font-size:1.3rem; color:var(--teal-light); direction:rtl; margin-bottom:8px; }
+.pinfo-text p { color:var(--dim); font-size:.85rem; line-height:1.6; }
+.ptime { font-size:.78rem; color:rgba(201,168,76,.65); margin-top:6px; }
+.rbadge { display:inline-flex; align-items:center; gap:5px; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.25); color:var(--gold); padding:4px 12px; border-radius:20px; font-size:.78rem; margin-top:8px; }
+.diff-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(192,57,43,.1); border:1px solid rgba(192,57,43,.3); color:#e07060; padding:4px 12px; border-radius:20px; font-size:.78rem; margin-top:8px; margin-left:8px; }
+
+/* ── PROGRESS ── */
+.prog-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.prog-label { font-size:.75rem; color:var(--dim); letter-spacing:3px; text-transform:uppercase; }
+.prog-wrap { background:rgba(255,255,255,.04); border-radius:10px; height:3px; width:160px; overflow:hidden; }
+.prog-fill { height:100%; background:linear-gradient(90deg,var(--teal),var(--gold)); border-radius:10px; transition:width .5s ease; }
+.prog-text { font-size:.75rem; color:var(--dim); }
+
+/* ── STEPS ── */
+.steps { display:flex; flex-direction:column; gap:10px; }
+.sc { background:var(--card); border:1px solid rgba(255,255,255,.04); border-radius:14px; overflow:hidden; cursor:pointer; transition:all .25s; }
+.sc:hover { border-color:rgba(201,168,76,.2); transform:translateY(-1px); }
+.sc.open { border-color:rgba(201,168,76,.35); box-shadow:0 4px 24px rgba(0,0,0,.25); }
+.sh { display:flex; align-items:center; gap:14px; padding:15px 18px; user-select:none; }
+.snum { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--teal-light)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.82rem; flex-shrink:0; box-shadow:0 0 12px rgba(26,122,110,.35); }
+.sc.open .snum { background:linear-gradient(135deg,var(--gold-dark),var(--gold)); box-shadow:0 0 12px rgba(201,168,76,.35); }
+.stw { flex:1; min-width:0; }
+.stitle { font-size:.97rem; font-weight:600; color:var(--text); margin-bottom:2px; }
+.sar { font-family:'Amiri',serif; font-size:.9rem; color:var(--teal-light); }
+.sarr { width:26px; height:26px; border-radius:50%; border:1px solid rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center; color:var(--dim); font-size:.75rem; transition:all .25s; flex-shrink:0; }
+.sc.open .sarr { background:rgba(201,168,76,.1); border-color:var(--gold); color:var(--gold); transform:rotate(180deg); }
+
+.sbody { display:none; padding:0 18px 18px; border-top:1px solid rgba(255,255,255,.04); }
+.sc.open .sbody { display:block; animation:fs .3s ease; }
+@keyframes fs { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── ILLUSTRATION ── */
+.illus { display:flex; justify-content:center; align-items:center; margin:18px 0 14px; }
+.illus svg { filter:drop-shadow(0 0 16px rgba(26,122,110,.25)); }
+
+/* ── LABELS ── */
+.body-label { display:inline-block; background:rgba(26,122,110,.15); border:1px solid rgba(26,122,110,.3); color:var(--teal-light); font-size:.7rem; padding:2px 8px; border-radius:6px; margin:0 3px 4px 0; letter-spacing:.5px; }
+.labels-row { margin-bottom:10px; }
+
+.sdesc { color:var(--text); font-size:.9rem; line-height:1.7; margin-bottom:10px; }
+.dua-box { background:linear-gradient(135deg,rgba(26,122,110,.08),rgba(201,168,76,.04)); border:1px solid rgba(26,122,110,.18); border-radius:10px; padding:14px 16px; margin-top:10px; }
+.dua-lbl { font-size:.7rem; color:var(--teal-light); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+.dua-ar { font-family:'Amiri',serif; font-size:1.3rem; color:var(--gold-light); direction:rtl; line-height:1.9; margin-bottom:6px; text-align:right; }
+.dua-bs { font-size:.82rem; color:var(--dim); font-style:italic; margin-bottom:4px; }
+.dua-mng { font-size:.78rem; color:rgba(201,168,76,.65); }
+
+/* ── NOTE BOX ── */
+.note-box { background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.2); border-radius:8px; padding:10px 14px; margin-top:10px; font-size:.82rem; color:rgba(237,232,220,.7); line-height:1.55; }
+.note-box strong { color:var(--gold); }
+
+/* ── NAV BUTTONS ── */
+.snav { display:flex; gap:10px; margin-top:24px; }
+.nb { flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; font-family:'Tajawal',sans-serif; font-size:.88rem; transition:all .25s; }
+.nb:hover { background:rgba(201,168,76,.07); border-color:var(--gold); color:var(--gold); }
+.nb:disabled { opacity:.25; cursor:not-allowed; }
+
+/* ── CHECKLIST PANEL ── */
+.check-panel { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; margin-top:22px; }
+.check-title { font-size:.78rem; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; }
+.check-grid { display:flex; flex-wrap:wrap; gap:8px; }
+.ck { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:8px; padding:6px 10px; font-size:.8rem; color:var(--dim); cursor:pointer; transition:all .2s; }
+.ck.done { background:rgba(26,122,110,.1); border-color:rgba(26,122,110,.3); color:var(--teal-light); }
+.ck .ck-dot { width:14px; height:14px; border-radius:50%; border:1.5px solid currentColor; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.55rem; }
+.ck.done .ck-dot::after { content:'✓'; }
+
+/* ── DŽUMA SPECIAL ── */
+.dzuma-note { background:linear-gradient(135deg,rgba(139,105,20,.15),rgba(201,168,76,.05)); border:1px solid rgba(201,168,76,.3); border-radius:12px; padding:14px 16px; margin-bottom:16px; }
+.dzuma-note h4 { color:var(--gold); font-size:.85rem; margin-bottom:6px; letter-spacing:1px; }
+.dzuma-note p { font-size:.82rem; color:var(--dim); line-height:1.55; }
+
+@media(max-width:600px) {
+  .pinfo { flex-direction:column; gap:12px; }
+  .picon { font-size:2.5rem; }
+  .check-grid { gap:6px; }
+}
+
+/* ── PWA INSTALL BANNER ── */
+#pwa-banner {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 1000; display: none;
+  background: linear-gradient(135deg, #0F1624, #141D2E);
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 16px; padding: 14px 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(201,168,76,0.1);
+  width: min(380px, calc(100vw - 32px));
+  animation: slideUp .4s ease;
+}
+@keyframes slideUp { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+#pwa-banner.show { display: flex; align-items: center; gap: 14px; }
+.pwa-icon { font-size: 2rem; flex-shrink:0; }
+.pwa-text { flex:1; }
+.pwa-text strong { display:block; color:var(--gold); font-size:.95rem; margin-bottom:3px; }
+.pwa-text span { color:var(--dim); font-size:.8rem; }
+.pwa-btns { display:flex; gap:8px; flex-shrink:0; }
+.pwa-install { background:linear-gradient(135deg,var(--teal),var(--teal-light)); color:#fff; border:none; padding:9px 16px; border-radius:10px; cursor:pointer; font-family:'Tajawal',sans-serif; font-size:.85rem; font-weight:600; white-space:nowrap; transition:all .2s; }
+.pwa-install:hover { filter:brightness(1.15); transform:scale(1.03); }
+.pwa-dismiss { background:transparent; border:1px solid rgba(255,255,255,.12); color:var(--dim); padding:9px 12px; border-radius:10px; cursor:pointer; font-size:.8rem; transition:all .2s; }
+.pwa-dismiss:hover { border-color:rgba(255,255,255,.3); color:var(--text); }
+
+/* iOS install hint */
+#ios-banner {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  z-index:1000; display:none;
+  background:linear-gradient(135deg,#0F1624,#141D2E);
+  border:1px solid rgba(201,168,76,0.4);
+  border-radius:16px; padding:16px 20px;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  width:min(360px,calc(100vw - 32px));
+  text-align:center; animation:slideUp .4s ease;
+}
+#ios-banner.show { display:block; }
+#ios-banner .ios-title { color:var(--gold); font-size:.95rem; font-weight:600; margin-bottom:8px; }
+#ios-banner .ios-steps { color:var(--dim); font-size:.82rem; line-height:1.7; }
+#ios-banner .ios-steps span { color:var(--text); }
+#ios-banner .ios-close { margin-top:12px; background:transparent; border:1px solid rgba(255,255,255,.15); color:var(--dim); padding:7px 20px; border-radius:8px; cursor:pointer; font-family:'Tajawal',sans-serif; font-size:.82rem; }
+
+/* Offline indicator */
+#offline-badge {
+  position:fixed; top:12px; right:12px; z-index:999;
+  background:rgba(192,57,43,.15); border:1px solid rgba(192,57,43,.35);
+  color:#e07060; padding:5px 12px; border-radius:20px;
+  font-size:.75rem; display:none; animation:fadeIn .3s ease;
+}
+#offline-badge.show { display:block; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* Install success toast */
+#install-toast {
+  position:fixed; top:20px; left:50%; transform:translateX(-50%);
+  z-index:1001; display:none;
+  background:linear-gradient(135deg,rgba(26,122,110,.9),rgba(20,100,88,.9));
+  border:1px solid rgba(26,169,154,.5); border-radius:12px;
+  padding:12px 20px; color:#fff; font-size:.88rem;
+  box-shadow:0 4px 20px rgba(0,0,0,.4); white-space:nowrap;
+  animation:slideDown .4s ease;
+}
+#install-toast.show { display:block; }
+@keyframes slideDown { from{opacity:0;transform:translateX(-50%) translateY(-10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+</style>
+</head>
+<body>
+<div id="stars"></div>
+
+<header>
+  <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+  <h1 class="main-title">تَعَلَّمِ الصَّلَاة</h1>
+  <p class="subtitle">Nauči Namaz &nbsp;·&nbsp; Interaktivni vodič</p>
+  <div class="hdiv"></div>
+</header>
+
+<nav class="prayer-nav">
+  <button class="pb active" onclick="sel('sabah',this)">🌅 Sabah <span class="rc">2 rekata</span></button>
+  <button class="pb" onclick="sel('podne',this)">☀️ Podne <span class="rc">4 rekata</span></button>
+  <button class="pb" onclick="sel('ikindija',this)">🌤 Ikindija <span class="rc">4 rekata</span></button>
+  <button class="pb" onclick="sel('aksam',this)">🌇 Akšam <span class="rc">3 rekata</span></button>
+  <button class="pb" onclick="sel('jacija',this)">🌙 Jacija <span class="rc">4 rekata</span></button>
+  <button class="pb" onclick="sel('dzuma',this)">🕌 Džuma <span class="rc">2 rekata</span></button>
+</nav>
+
+<div class="tip-banner">
+  <div class="tip-inner">
+    <span class="tip-icon">💡</span>
+    <span>Klikni na svaki korak da vidiš ilustraciju položaja tijela, opis pokreta i dovu. Koristite strelice za navigaciju korak po korak. Checklist na dnu prati tvoj napredak.</span>
+  </div>
+</div>
+
+<main class="main" id="app"></main>
+
+<script>
+// ═══════════════════════════════════════════════
+//  ILLUSTRATIONS — detailed SVG figures
+// ═══════════════════════════════════════════════
+const IL = {
+
+/* ══ NIYYET — standing, hand on heart ══ */
+niyyet:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 340" width="240" height="290">
+<defs>
+  <radialGradient id="aura1" cx="50%" cy="45%" r="45%">
+    <stop offset="0%" stop-color="#C9A84C" stop-opacity=".18"/>
+    <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="skin1" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/>
+    <stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe1" x1="0%" y1="0%" x2="15%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/>
+    <stop offset="60%" stop-color="#d4c8b0"/>
+    <stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+</defs>
+<!-- aura glow -->
+<ellipse cx="140" cy="160" rx="95" ry="110" fill="url(#aura1)"/>
+<!-- prayer mat -->
+<ellipse cx="140" cy="318" rx="72" ry="11" fill="#1A7A6E" opacity=".22"/>
+<path d="M70 318 Q140 310 210 318" stroke="#26A99A" stroke-width="1" fill="none" opacity=".3"/>
+
+<!-- === BODY === -->
+<!-- shoes -->
+<ellipse cx="112" cy="314" rx="18" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<ellipse cx="168" cy="314" rx="18" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<!-- ankles/lower leg visible -->
+<rect x="106" y="290" width="12" height="26" rx="5" fill="#d4956a"/>
+<rect x="162" y="290" width="12" height="26" rx="5" fill="#d4956a"/>
+<!-- THOBE — main robe body -->
+<path d="M93 130 C88 180 84 240 82 295 L158 295 C156 240 152 180 147 130 Z" fill="url(#thobe1)" stroke="#b8a888" stroke-width="1"/>
+<!-- thobe side folds/drape -->
+<path d="M93 140 C91 175 89 215 88 255" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".5"/>
+<path d="M147 140 C149 175 151 215 152 255" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".5"/>
+<!-- thobe center seam -->
+<path d="M120 135 L120 220" stroke="#c0b098" stroke-width="1" opacity=".4"/>
+<!-- collar/neckline -->
+<path d="M105 130 C110 142 120 148 130 142 C136 138 143 133 145 130" fill="url(#thobe1)" stroke="#b8a888" stroke-width="1"/>
+<!-- collar V-neck -->
+<path d="M113 130 L120 145 L127 130" fill="none" stroke="#a89878" stroke-width="1.5" opacity=".6"/>
+
+<!-- LEFT ARM hanging naturally -->
+<path d="M93 142 C85 165 78 200 76 228" stroke="#d4956a" stroke-width="15" stroke-linecap="round" fill="none"/>
+<path d="M93 142 C85 165 78 200 76 228" stroke="#b8a888" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+<!-- left hand -->
+<path d="M70 226 C67 222 66 218 68 215 C72 210 78 212 80 216 L80 230 C76 232 72 230 70 226Z" fill="url(#skin1)" stroke="#a07848" stroke-width="1"/>
+<line x1="72" y1="215" x2="70" y2="208" stroke="#b8724a" stroke-width="2" stroke-linecap="round"/>
+<line x1="75" y1="213" x2="74" y2="206" stroke="#b8724a" stroke-width="2" stroke-linecap="round"/>
+<line x1="78" y1="213" x2="78" y2="206" stroke="#b8724a" stroke-width="2" stroke-linecap="round"/>
+
+<!-- RIGHT ARM — bent inward, hand on chest -->
+<path d="M147 142 C152 158 152 170 142 178" stroke="#d4956a" stroke-width="15" stroke-linecap="round" fill="none"/>
+<path d="M147 142 C152 158 152 170 142 178" stroke="#b8a888" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+<!-- sleeve cuff -->
+<ellipse cx="143" cy="178" rx="10" ry="6" fill="#d4c8b0" stroke="#b8a888" stroke-width="1"/>
+<!-- right hand flat on chest -->
+<path d="M118 172 C115 168 117 162 122 161 C130 159 140 164 140 170 L138 180 C132 184 122 182 118 172Z" fill="url(#skin1)" stroke="#a07848" stroke-width="1"/>
+<line x1="120" y1="163" x2="118" y2="156" stroke="#b8724a" stroke-width="1.8" stroke-linecap="round"/>
+<line x1="125" y1="161" x2="124" y2="154" stroke="#b8724a" stroke-width="1.8" stroke-linecap="round"/>
+<line x1="130" y1="161" x2="130" y2="154" stroke="#b8724a" stroke-width="1.8" stroke-linecap="round"/>
+<line x1="135" y1="162" x2="136" y2="155" stroke="#b8724a" stroke-width="1.8" stroke-linecap="round"/>
+
+<!-- === NECK === -->
+<path d="M113 114 L113 132 C113 132 120 136 127 132 L127 114 C127 108 113 108 113 114Z" fill="url(#skin1)"/>
+
+<!-- === HEAD === -->
+<!-- head shape — realistic oval -->
+<path d="M102 88 C100 70 106 52 120 46 C134 40 148 50 150 68 C152 86 148 105 140 112 C132 118 108 118 102 108 Z" fill="url(#skin1)" stroke="#a07848" stroke-width="1"/>
+<!-- jaw/chin -->
+<path d="M106 108 C108 118 120 122 132 118 C138 115 142 110 140 108" fill="url(#skin1)"/>
+
+<!-- KUFI (prayer cap) -->
+<path d="M100 78 C100 58 108 46 120 44 C132 42 142 52 142 70 L142 78 C132 72 108 72 100 78Z" fill="#2d5a4a"/>
+<!-- kufi texture lines -->
+<path d="M103 76 C108 62 120 56 138 70" stroke="#1A7A6E" stroke-width="1" fill="none" opacity=".5"/>
+<path d="M104 80 C110 66 122 60 140 74" stroke="#26A99A" stroke-width=".7" fill="none" opacity=".3"/>
+<!-- kufi edge band -->
+<path d="M100 78 C108 74 132 74 142 78" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity=".5"/>
+
+<!-- EARS -->
+<path d="M100 82 C96 80 94 88 96 94 C98 98 102 98 104 94 L102 82Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<path d="M140 82 C144 80 146 88 144 94 C142 98 138 98 136 94 L138 82Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+
+<!-- BEARD — full beard shape -->
+<path d="M104 108 C102 118 104 128 112 134 C120 138 128 136 134 130 C140 124 142 114 140 108 C136 106 128 108 120 108 C112 108 106 106 104 108Z" fill="#3d2510" opacity=".85"/>
+<!-- beard hair texture -->
+<path d="M108 112 C108 122 112 130 120 132" stroke="#5a3518" stroke-width="1" fill="none" opacity=".5"/>
+<path d="M132 112 C132 122 128 130 120 132" stroke="#5a3518" stroke-width="1" fill="none" opacity=".5"/>
+<!-- moustache -->
+<path d="M112 102 C115 98 118 97 120 98 C122 97 125 98 128 102" fill="#3d2510" opacity=".7"/>
+
+<!-- FACE FEATURES -->
+<!-- eyebrows -->
+<path d="M106 78 C110 74 116 74 120 76" stroke="#3d2510" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M120 76 C124 74 130 74 134 78" stroke="#3d2510" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<!-- eyes -->
+<path d="M107 84 C110 80 116 80 118 84 C116 88 110 88 107 84Z" fill="#1a0c00"/>
+<path d="M122 84 C124 80 130 80 133 84 C130 88 124 88 122 84Z" fill="#1a0c00"/>
+<!-- eye whites -->
+<ellipse cx="112" cy="83" rx="3" ry="2.5" fill="#f5ede0" opacity=".5"/>
+<ellipse cx="127" cy="83" rx="3" ry="2.5" fill="#f5ede0" opacity=".5"/>
+<!-- pupils -->
+<circle cx="112" cy="83" r="2" fill="#1a0c00"/>
+<circle cx="127" cy="83" r="2" fill="#1a0c00"/>
+<circle cx="113" cy="82" r="1" fill="#fff" opacity=".7"/>
+<circle cx="128" cy="82" r="1" fill="#fff" opacity=".7"/>
+<!-- nose bridge & nose -->
+<path d="M120 78 L118 90 C116 95 114 97 114 100 Q120 103 126 100 C126 97 124 95 122 90 Z" fill="#c8805a" opacity=".6"/>
+<!-- nostrils -->
+<ellipse cx="115" cy="101" rx="3" ry="2" fill="#a06040" opacity=".5"/>
+<ellipse cx="125" cy="101" rx="3" ry="2" fill="#a06040" opacity=".5"/>
+<!-- mouth — calm expression -->
+<path d="M113 107 C116 110 124 110 127 107" stroke="#8a4a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+<!-- HEART symbol glowing -->
+<circle cx="128" cy="172" r="12" fill="#C9A84C" opacity=".12"/>
+<path d="M122 169 C122 165 128 163 128 168 C128 163 134 165 134 169 C134 173 128 178 128 178 C128 178 122 173 122 169Z" fill="#C9A84C" opacity=".55"/>
+
+<!-- kibla direction arrow -->
+<path d="M220 24 L208 18 L208 22 L196 22 L196 26 L208 26 L208 30Z" fill="#C9A84C" opacity=".4"/>
+<text x="222" y="36" font-size="9" fill="#C9A84C" opacity=".4">kibla</text>
+<text x="140" y="18" font-family="Amiri,serif" font-size="14" fill="#C9A84C" opacity=".6" text-anchor="middle">نِيَّة</text>
+</svg>`,
+
+/* ══ TEKBIR — arms raised to ears ══ */
+tekbir:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 360" width="240" height="310">
+<defs>
+  <linearGradient id="skin2" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe2" x1="0%" y1="0%" x2="15%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/><stop offset="60%" stop-color="#d4c8b0"/><stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+</defs>
+<ellipse cx="140" cy="335" rx="72" ry="11" fill="#1A7A6E" opacity=".22"/>
+<path d="M70 335 Q140 327 210 335" stroke="#26A99A" stroke-width="1" fill="none" opacity=".3"/>
+
+<!-- shoes -->
+<ellipse cx="112" cy="330" rx="18" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<ellipse cx="168" cy="330" rx="18" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<!-- ankles -->
+<rect x="106" y="306" width="12" height="26" rx="5" fill="#d4956a"/>
+<rect x="162" y="306" width="12" height="26" rx="5" fill="#d4956a"/>
+<!-- THOBE -->
+<path d="M93 148 C88 195 84 255 82 310 L158 310 C156 255 152 195 147 148 Z" fill="url(#thobe2)" stroke="#b8a888" stroke-width="1"/>
+<path d="M93 158 C91 192 89 232 88 272" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".5"/>
+<path d="M147 158 C149 192 151 232 152 272" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".5"/>
+<path d="M113 148 L120 163 L127 148" fill="none" stroke="#a89878" stroke-width="1.5" opacity=".6"/>
+
+<!-- LEFT ARM — raised high, upper arm out, forearm vertical -->
+<!-- upper arm (shoulder to elbow) -->
+<path d="M93 160 C78 148 62 138 55 118" stroke="#d4956a" stroke-width="16" stroke-linecap="round" fill="none"/>
+<path d="M93 160 C78 148 62 138 55 118" stroke="#b8a888" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+<!-- sleeve covering upper arm -->
+<path d="M88 156 C74 144 60 136 54 118 L60 112 C66 130 80 142 94 154Z" fill="url(#thobe2)" stroke="#b8a888" stroke-width="1"/>
+<!-- forearm (elbow to wrist) — going upward -->
+<path d="M55 118 C52 102 52 88 55 72" stroke="#d4956a" stroke-width="13" stroke-linecap="round" fill="none"/>
+<path d="M55 118 C52 102 52 88 55 72" stroke="#b8a888" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+<!-- LEFT HAND open, palm facing right (toward qibla) -->
+<path d="M48 70 C45 62 47 54 52 52 C57 50 62 54 63 60 L62 74 C58 78 50 76 48 70Z" fill="url(#skin2)" stroke="#a07848" stroke-width="1.2"/>
+<!-- fingers left hand -->
+<line x1="50" y1="54" x2="47" y2="44" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<line x1="54" y1="52" x2="52" y2="42" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<line x1="58" y1="52" x2="58" y2="42" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<line x1="62" y1="54" x2="63" y2="44" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<!-- thumb -->
+<line x1="48" y1="62" x2="42" y2="58" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<!-- knuckle lines -->
+<path d="M50 62 C52 58 56 56 60 58" stroke="#a07848" stroke-width=".8" fill="none" opacity=".5"/>
+
+<!-- RIGHT ARM raised -->
+<path d="M147 160 C162 148 178 138 185 118" stroke="#d4956a" stroke-width="16" stroke-linecap="round" fill="none"/>
+<path d="M147 160 C162 148 178 138 185 118" stroke="#b8a888" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+<path d="M152 156 C166 144 180 136 186 118 L180 112 C174 130 160 142 146 154Z" fill="url(#thobe2)" stroke="#b8a888" stroke-width="1"/>
+<path d="M185 118 C188 102 188 88 185 72" stroke="#d4956a" stroke-width="13" stroke-linecap="round" fill="none"/>
+<path d="M185 118 C188 102 188 88 185 72" stroke="#b8a888" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+<!-- RIGHT HAND open -->
+<path d="M192 70 C195 62 193 54 188 52 C183 50 178 54 177 60 L178 74 C182 78 190 76 192 70Z" fill="url(#skin2)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="190" y1="54" x2="193" y2="44" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<line x1="186" y1="52" x2="188" y2="42" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<line x1="182" y1="52" x2="182" y2="42" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<line x1="178" y1="54" x2="177" y2="44" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<line x1="192" y1="62" x2="198" y2="58" stroke="#d4956a" stroke-width="4" stroke-linecap="round"/>
+<path d="M190 62 C188 58 184 56 180 58" stroke="#a07848" stroke-width=".8" fill="none" opacity=".5"/>
+
+<!-- NECK -->
+<path d="M113 132 L113 150 C116 154 124 154 127 150 L127 132 C127 126 113 126 113 132Z" fill="url(#skin2)"/>
+
+<!-- HEAD -->
+<path d="M102 106 C100 88 106 70 120 64 C134 58 148 68 150 86 C152 104 148 124 140 130 C132 136 108 136 102 124 Z" fill="url(#skin2)" stroke="#a07848" stroke-width="1"/>
+<path d="M106 124 C108 134 120 138 132 134 C138 131 142 126 140 124" fill="url(#skin2)"/>
+
+<!-- KUFI -->
+<path d="M100 96 C100 76 108 64 120 62 C132 60 142 70 142 88 L142 96 C132 90 108 90 100 96Z" fill="#2d5a4a"/>
+<path d="M103 94 C108 80 120 74 138 88" stroke="#1A7A6E" stroke-width="1" fill="none" opacity=".5"/>
+<path d="M100 96 C108 92 132 92 142 96" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity=".5"/>
+
+<!-- EARS with earlobe highlight (thumbs near ears) -->
+<path d="M100 100 C96 98 94 106 96 112 C98 116 102 116 104 112 L102 100Z" fill="#c8805a" stroke="#C9A84C" stroke-width="1.5"/>
+<path d="M140 100 C144 98 146 106 144 112 C142 116 138 116 136 112 L138 100Z" fill="#c8805a" stroke="#C9A84C" stroke-width="1.5"/>
+
+<!-- thumb→ear dotted lines -->
+<line x1="57" y1="88" x2="100" y2="104" stroke="#C9A84C" stroke-width="1.2" stroke-dasharray="4,4" opacity=".5"/>
+<line x1="183" y1="88" x2="140" y2="104" stroke="#C9A84C" stroke-width="1.2" stroke-dasharray="4,4" opacity=".5"/>
+<text x="24" y="106" font-size="8.5" fill="#C9A84C" opacity=".55">palčevi uz uši</text>
+
+<!-- BEARD -->
+<path d="M104 124 C102 134 104 144 112 150 C120 154 128 152 134 146 C140 140 142 130 140 124 C136 122 128 124 120 124 C112 124 106 122 104 124Z" fill="#3d2510" opacity=".85"/>
+<path d="M108 128 C108 138 112 146 120 148" stroke="#5a3518" stroke-width="1" fill="none" opacity=".5"/>
+<path d="M132 128 C132 138 128 146 120 148" stroke="#5a3518" stroke-width="1" fill="none" opacity=".5"/>
+<path d="M112 118 C115 114 118 113 120 114 C122 113 125 114 128 118" fill="#3d2510" opacity=".7"/>
+
+<!-- EYES & FACE -->
+<path d="M107 96 C110 92 116 92 118 96 C116 100 110 100 107 96Z" fill="#1a0c00"/>
+<path d="M122 96 C124 92 130 92 133 96 C130 100 124 100 122 96Z" fill="#1a0c00"/>
+<ellipse cx="112" cy="95" rx="2.5" ry="2" fill="#f5ede0" opacity=".5"/>
+<ellipse cx="127" cy="95" rx="2.5" ry="2" fill="#f5ede0" opacity=".5"/>
+<circle cx="112" cy="95" r="1.8" fill="#1a0c00"/>
+<circle cx="127" cy="95" r="1.8" fill="#1a0c00"/>
+<circle cx="113" cy="94" r="1" fill="#fff" opacity=".7"/>
+<circle cx="128" cy="94" r="1" fill="#fff" opacity=".7"/>
+<path d="M106 90 C110 86 116 86 120 88" stroke="#3d2510" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M120 88 C124 86 130 86 134 90" stroke="#3d2510" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M120 90 L118 102 C116 107 114 109 114 112 Q120 115 126 112 C126 109 124 107 122 102 Z" fill="#c8805a" opacity=".6"/>
+<ellipse cx="115" cy="113" rx="2.5" ry="1.8" fill="#a06040" opacity=".5"/>
+<ellipse cx="125" cy="113" rx="2.5" ry="1.8" fill="#a06040" opacity=".5"/>
+<path d="M113 119 C116 122 124 122 127 119" stroke="#8a4a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+<text x="140" y="18" font-family="Amiri,serif" font-size="14" fill="#C9A84C" opacity=".65" text-anchor="middle">اَللهُ أَكْبَر</text>
+</svg>`,
+
+/* ══ KIYAM — standing, arms folded ══ */
+kijam:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 360" width="240" height="310">
+<defs>
+  <linearGradient id="skin3" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe3" x1="0%" y1="0%" x2="15%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/><stop offset="60%" stop-color="#d4c8b0"/><stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+</defs>
+<ellipse cx="140" cy="335" rx="72" ry="11" fill="#1A7A6E" opacity=".22"/>
+<!-- kibla guide -->
+<line x1="140" y1="335" x2="140" y2="18" stroke="#C9A84C" stroke-width=".6" stroke-dasharray="5,8" opacity=".1"/>
+
+<ellipse cx="112" cy="330" rx="18" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<ellipse cx="168" cy="330" rx="18" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<rect x="106" y="306" width="12" height="26" rx="5" fill="#d4956a"/>
+<rect x="162" y="306" width="12" height="26" rx="5" fill="#d4956a"/>
+<!-- feet width annotation -->
+<line x1="96" y1="342" x2="184" y2="342" stroke="#C9A84C" stroke-width=".8" opacity=".3"/>
+<text x="140" y="352" font-size="8" fill="#C9A84C" opacity=".35" text-anchor="middle">~ širina ramena</text>
+
+<!-- THOBE -->
+<path d="M93 148 C88 195 84 255 82 310 L158 310 C156 255 152 195 147 148 Z" fill="url(#thobe3)" stroke="#b8a888" stroke-width="1"/>
+<path d="M95 165 C93 200 91 240 90 278" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".45"/>
+<path d="M145 165 C147 200 149 240 150 278" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".45"/>
+<!-- extra fold lines for cloth realism -->
+<path d="M110 180 C108 210 107 245 108 280" stroke="#b8a888" stroke-width=".8" fill="none" opacity=".3"/>
+<path d="M130 180 C132 210 133 245 132 280" stroke="#b8a888" stroke-width=".8" fill="none" opacity=".3"/>
+<path d="M113 148 L120 163 L127 148" fill="none" stroke="#a89878" stroke-width="1.5" opacity=".6"/>
+
+<!-- FOLDED ARMS — right hand grips left wrist, just below navel -->
+<!-- Right arm: goes across body -->
+<path d="M147 162 C148 172 148 180 138 186" stroke="#d4956a" stroke-width="15" stroke-linecap="round" fill="none"/>
+<path d="M147 162 C148 172 148 180 138 186" stroke="#b8a888" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+<!-- sleeve covering right arm -->
+<path d="M150 162 C151 173 150 181 140 188 L136 184 C146 178 147 170 146 158Z" fill="url(#thobe3)" stroke="#b8a888" stroke-width=".8" opacity=".8"/>
+<!-- Left arm: extends across belly -->
+<path d="M93 162 C92 172 92 182 102 188" stroke="#d4956a" stroke-width="15" stroke-linecap="round" fill="none"/>
+<path d="M93 162 C92 172 92 182 102 188" stroke="#b8a888" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+<!-- sleeve left -->
+<path d="M90 162 C89 173 90 181 100 188 L104 184 C94 178 93 170 94 158Z" fill="url(#thobe3)" stroke="#b8a888" stroke-width=".8" opacity=".8"/>
+<!-- HANDS overlapped — right hand gripping left wrist -->
+<!-- left forearm/wrist visible -->
+<path d="M102 186 C108 184 118 184 126 186 L126 196 C118 198 108 198 102 196Z" fill="url(#skin3)" stroke="#a07848" stroke-width="1"/>
+<!-- right hand gripping over it -->
+<path d="M118 182 C124 180 134 182 138 186 L136 196 C130 198 122 196 118 190Z" fill="url(#skin3)" stroke="#a07848" stroke-width="1.2"/>
+<!-- right hand fingers wrapping -->
+<line x1="120" y1="183" x2="119" y2="177" stroke="#b8724a" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="125" y1="182" x2="125" y2="176" stroke="#b8724a" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="130" y1="182" x2="131" y2="176" stroke="#b8724a" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="134" y1="183" x2="136" y2="178" stroke="#b8724a" stroke-width="2.5" stroke-linecap="round"/>
+<!-- annotation -->
+<text x="152" y="187" font-size="8.5" fill="#C9A84C" opacity=".55">desna ruka</text>
+<text x="152" y="197" font-size="8.5" fill="#C9A84C" opacity=".55">na lijevoj</text>
+
+<!-- NECK -->
+<path d="M113 132 L113 150 C116 154 124 154 127 150 L127 132 C127 126 113 126 113 132Z" fill="url(#skin3)"/>
+
+<!-- HEAD (reuse same detailed head) -->
+<path d="M102 106 C100 88 106 70 120 64 C134 58 148 68 150 86 C152 104 148 124 140 130 C132 136 108 136 102 124 Z" fill="url(#skin3)" stroke="#a07848" stroke-width="1"/>
+<path d="M106 124 C108 134 120 138 132 134 C138 131 142 126 140 124" fill="url(#skin3)"/>
+<path d="M100 96 C100 76 108 64 120 62 C132 60 142 70 142 88 L142 96 C132 90 108 90 100 96Z" fill="#2d5a4a"/>
+<path d="M100 96 C108 92 132 92 142 96" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity=".5"/>
+<path d="M100 100 C96 98 94 106 96 112 C98 116 102 116 104 112 L102 100Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<path d="M140 100 C144 98 146 106 144 112 C142 116 138 116 136 112 L138 100Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<path d="M104 124 C102 134 104 144 112 150 C120 154 128 152 134 146 C140 140 142 130 140 124 C136 122 128 124 120 124 C112 124 106 122 104 124Z" fill="#3d2510" opacity=".85"/>
+<path d="M108 128 C108 138 112 146 120 148" stroke="#5a3518" stroke-width="1" fill="none" opacity=".4"/>
+<path d="M112 118 C116 114 120 113 120 114 C120 113 124 114 128 118" fill="#3d2510" opacity=".7"/>
+<path d="M107 96 C110 92 116 92 118 96 C116 100 110 100 107 96Z" fill="#1a0c00"/>
+<path d="M122 96 C124 92 130 92 133 96 C130 100 124 100 122 96Z" fill="#1a0c00"/>
+<circle cx="112" cy="95" r="1.8" fill="#1a0c00"/>
+<circle cx="127" cy="95" r="1.8" fill="#1a0c00"/>
+<circle cx="113" cy="94" r="1" fill="#fff" opacity=".7"/>
+<circle cx="128" cy="94" r="1" fill="#fff" opacity=".7"/>
+<path d="M106 90 C110 86 116 86 120 88" stroke="#3d2510" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M120 88 C124 86 130 86 134 90" stroke="#3d2510" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M120 90 L118 102 C116 107 114 109 114 112 Q120 115 126 112 C126 109 124 107 122 102 Z" fill="#c8805a" opacity=".6"/>
+<ellipse cx="115" cy="113" rx="2.5" ry="1.8" fill="#a06040" opacity=".5"/>
+<ellipse cx="125" cy="113" rx="2.5" ry="1.8" fill="#a06040" opacity=".5"/>
+<path d="M113 119 C116 122 124 122 127 119" stroke="#8a4a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<!-- downcast eyes for recitation -->
+<path d="M108 99 C110 101 114 101 117 99" stroke="#1a0c00" stroke-width="1.2" fill="none" opacity=".6"/>
+<path d="M123 99 C125 101 129 101 132 99" stroke="#1a0c00" stroke-width="1.2" fill="none" opacity=".6"/>
+<text x="154" y="122" font-size="8" fill="#C9A84C" opacity=".4">pogled ka sedždi</text>
+
+<text x="140" y="18" font-family="Amiri,serif" font-size="12" fill="#C9A84C" opacity=".6" text-anchor="middle">اَلْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين</text>
+</svg>`,
+
+/* ══ RUKU — bowing 90° ══ */
+ruku:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 270" width="290" height="230">
+<defs>
+  <linearGradient id="skin4" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe4" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/><stop offset="60%" stop-color="#d4c8b0"/><stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+</defs>
+<!-- ground -->
+<line x1="10" y1="240" x2="330" y2="240" stroke="#C9A84C" stroke-width=".8" opacity=".2"/>
+<rect x="40" y="232" width="258" height="12" rx="3" fill="#1A7A6E" opacity=".18"/>
+<path d="M55 238 Q190 232 295 238" stroke="#26A99A" stroke-width=".8" fill="none" opacity=".3"/>
+
+<!-- shoes/feet on ground -->
+<ellipse cx="196" cy="238" rx="20" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<ellipse cx="240" cy="238" rx="20" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<!-- lower legs vertical -->
+<path d="M192 180 C190 205 190 222 196 237" stroke="#d4956a" stroke-width="16" stroke-linecap="round" fill="none"/>
+<path d="M192 180 C190 205 190 222 196 237" stroke="#b8a888" stroke-width="1.3" fill="none"/>
+<path d="M236 180 C238 205 240 222 240 237" stroke="#d4956a" stroke-width="16" stroke-linecap="round" fill="none"/>
+<path d="M236 180 C238 205 240 222 240 237" stroke="#b8a888" stroke-width="1.3" fill="none"/>
+<!-- thobe covering lower legs -->
+<path d="M184 180 C182 208 182 228 186 238 L202 238 C200 226 200 206 198 178Z" fill="url(#thobe4)" stroke="#b8a888" stroke-width=".8" opacity=".8"/>
+<path d="M228 180 C230 208 232 228 230 238 L246 238 C248 226 246 206 244 178Z" fill="url(#thobe4)" stroke="#b8a888" stroke-width=".8" opacity=".8"/>
+
+<!-- THIGHS at ~45° angle (knee to hip) -->
+<path d="M192 180 C186 160 180 140 178 120" stroke="#d4956a" stroke-width="20" stroke-linecap="round" fill="none"/>
+<path d="M192 180 C186 160 180 140 178 120" stroke="#b8a888" stroke-width="1.3" fill="none"/>
+<path d="M236 180 C242 160 250 140 254 120" stroke="#d4956a" stroke-width="20" stroke-linecap="round" fill="none"/>
+<path d="M236 180 C242 160 250 140 254 120" stroke="#b8a888" stroke-width="1.3" fill="none"/>
+
+<!-- BACK — horizontal thobe, gravity drape -->
+<path d="M68 108 L268 116 L268 132 L68 124 Z" fill="url(#thobe4)" stroke="#b8a888" stroke-width="1.5"/>
+<!-- cloth hanging down from bent back -->
+<path d="M90 124 C88 152 90 182 92 210" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".4"/>
+<path d="M130 125 C128 152 130 180 132 208" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".35"/>
+<path d="M170 124 C168 150 170 178 172 204" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".3"/>
+<path d="M210 122 C208 148 210 174 212 200" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".25"/>
+
+<!-- SPINE line along back -->
+<line x1="72" y1="116" x2="262" y2="116" stroke="#C9A84C" stroke-width=".8" stroke-dasharray="5,5" opacity=".25"/>
+<text x="165" y="104" font-size="8.5" fill="#C9A84C" opacity=".4" text-anchor="middle">leđa ravna — 90°</text>
+
+<!-- ARMS hanging down, hands on knees -->
+<!-- Left arm -->
+<path d="M96 120 C96 148 96 165 96 178" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M96 120 C96 148 96 165 96 178" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<!-- Left hand on knee, fingers spread -->
+<path d="M82 176 C82 168 88 164 96 164 C104 164 110 168 110 176 L108 186 C104 190 88 190 84 186Z" fill="url(#skin4)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="84" y1="168" x2="80" y2="158" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="89" y1="165" x2="87" y2="155" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="95" y1="164" x2="95" y2="154" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="101" y1="165" x2="103" y2="155" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="106" y1="169" x2="110" y2="160" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<!-- Right arm -->
+<path d="M240 118 C236 146 232 162 228 176" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M240 118 C236 146 232 162 228 176" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<!-- Right hand on knee -->
+<path d="M214 174 C214 166 220 162 228 162 C236 162 242 166 242 174 L240 184 C236 188 220 188 216 184Z" fill="url(#skin4)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="216" y1="166" x2="212" y2="156" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="221" y1="163" x2="219" y2="153" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="227" y1="162" x2="227" y2="152" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="233" y1="163" x2="235" y2="153" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="238" y1="167" x2="242" y2="158" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+
+<!-- NECK — horizontal -->
+<path d="M62 108 L80 116 L80 124 L62 116Z" fill="url(#skin4)"/>
+
+<!-- HEAD — side view, level with back -->
+<ellipse cx="46" cy="110" rx="26" ry="28" fill="url(#skin4)" stroke="#a07848" stroke-width="1.2"/>
+<!-- KUFI from side -->
+<path d="M22 100 C24 80 34 68 46 66 C58 64 68 76 70 96 L70 100 C58 94 34 94 22 100Z" fill="#2d5a4a"/>
+<path d="M22 100 C34 96 58 96 70 100" stroke="#C9A84C" stroke-width="1" fill="none" opacity=".5"/>
+<!-- ear visible from side -->
+<path d="M68 108 C72 106 74 114 72 120 C70 124 66 124 64 120 L66 108Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<!-- BEARD from side — flowing down -->
+<path d="M26 120 C24 132 26 144 32 150 C40 156 50 154 56 148 C62 142 64 132 62 122 C56 120 48 122 40 122 C32 122 26 120 26 120Z" fill="#3d2510" opacity=".85"/>
+<!-- face features side view -->
+<ellipse cx="36" cy="105" rx="5" ry="4" fill="#1a0c00"/>
+<circle cx="36" cy="104" r="2" fill="#1a0c00"/>
+<circle cx="37" cy="103" r="1" fill="#fff" opacity=".7"/>
+<path d="M32 98 C36 94 42 95 44 98" stroke="#3d2510" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M44 100 L43 112 C42 116 44 118 46 116 L46 100" fill="#c8805a" opacity=".6"/>
+
+<!-- 90° angle indicator -->
+<path d="M250 124 L250 178 L198 178" stroke="#C9A84C" stroke-width="1.5" fill="none" stroke-dasharray="4,4" opacity=".55"/>
+<rect x="246" y="170" width="8" height="8" fill="none" stroke="#C9A84C" stroke-width="1.2" opacity=".55"/>
+<text x="254" y="154" font-size="10" fill="#C9A84C" opacity=".65">90°</text>
+
+<text x="170" y="18" font-family="Amiri,serif" font-size="12" fill="#C9A84C" opacity=".6" text-anchor="middle">سُبْحَانَ رَبِّيَ الْعَظِيم</text>
+</svg>`,
+
+/* ══ ITIDAL — upright after ruku ══ */
+itidal:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 360" width="240" height="310">
+<defs>
+  <linearGradient id="skin5" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe5" x1="0%" y1="0%" x2="15%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/><stop offset="60%" stop-color="#d4c8b0"/><stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+</defs>
+<ellipse cx="140" cy="335" rx="72" ry="11" fill="#1A7A6E" opacity=".22"/>
+<ellipse cx="112" cy="330" rx="18" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<ellipse cx="168" cy="330" rx="18" ry="7" fill="#3a2810" stroke="#26A99A" stroke-width="1.2"/>
+<rect x="106" y="306" width="12" height="26" rx="5" fill="#d4956a"/>
+<rect x="162" y="306" width="12" height="26" rx="5" fill="#d4956a"/>
+<!-- THOBE -->
+<path d="M93 148 C88 195 84 255 82 310 L158 310 C156 255 152 195 147 148 Z" fill="url(#thobe5)" stroke="#b8a888" stroke-width="1"/>
+<path d="M95 165 C93 200 91 240 90 278" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".4"/>
+<path d="M145 165 C147 200 149 240 150 278" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".4"/>
+<path d="M113 148 L120 163 L127 148" fill="none" stroke="#a89878" stroke-width="1.5" opacity=".6"/>
+<!-- rising motion arrow -->
+<path d="M205 220 L205 160" stroke="#C9A84C" stroke-width="2" fill="none" marker-end="url(#upA)" opacity=".55"/>
+<defs><marker id="upA" markerWidth="8" markerHeight="8" refX="4" refY="0" orient="auto"><path d="M0,8 L4,0 L8,8" fill="none" stroke="#C9A84C" stroke-width="1.8"/></marker></defs>
+<text x="210" y="196" font-size="8" fill="#C9A84C" opacity=".4">ustajanje</text>
+<!-- ARMS relaxed at sides, hands open -->
+<path d="M93 160 C84 185 76 210 72 240" stroke="#d4956a" stroke-width="15" stroke-linecap="round" fill="none"/>
+<path d="M93 160 C84 185 76 210 72 240" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<!-- sleeve left -->
+<path d="M89 156 C80 182 74 208 70 238 L76 242 C78 212 86 186 94 162Z" fill="url(#thobe5)" stroke="#b8a888" stroke-width=".8" opacity=".7"/>
+<!-- left hand -->
+<path d="M64 238 C61 230 62 222 68 220 C74 218 78 222 78 228 L76 242 C72 246 66 244 64 238Z" fill="url(#skin5)" stroke="#a07848" stroke-width="1"/>
+<line x1="66" y1="222" x2="63" y2="213" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="70" y1="220" x2="68" y2="211" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="74" y1="220" x2="74" y2="211" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<!-- right arm -->
+<path d="M147 160 C156 185 164 210 168 240" stroke="#d4956a" stroke-width="15" stroke-linecap="round" fill="none"/>
+<path d="M147 160 C156 185 164 210 168 240" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<path d="M151 156 C160 182 166 208 170 238 L164 242 C162 212 154 186 146 162Z" fill="url(#thobe5)" stroke="#b8a888" stroke-width=".8" opacity=".7"/>
+<!-- right hand -->
+<path d="M176 238 C179 230 178 222 172 220 C166 218 162 222 162 228 L164 242 C168 246 174 244 176 238Z" fill="url(#skin5)" stroke="#a07848" stroke-width="1"/>
+<line x1="174" y1="222" x2="177" y2="213" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="170" y1="220" x2="172" y2="211" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="166" y1="220" x2="166" y2="211" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<!-- NECK & HEAD same as before -->
+<path d="M113 132 L113 150 C116 154 124 154 127 150 L127 132 C127 126 113 126 113 132Z" fill="url(#skin5)"/>
+<path d="M102 106 C100 88 106 70 120 64 C134 58 148 68 150 86 C152 104 148 124 140 130 C132 136 108 136 102 124 Z" fill="url(#skin5)" stroke="#a07848" stroke-width="1"/>
+<path d="M106 124 C108 134 120 138 132 134 C138 131 142 126 140 124" fill="url(#skin5)"/>
+<path d="M100 96 C100 76 108 64 120 62 C132 60 142 70 142 88 L142 96 C132 90 108 90 100 96Z" fill="#2d5a4a"/>
+<path d="M100 96 C108 92 132 92 142 96" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity=".5"/>
+<path d="M100 100 C96 98 94 106 96 112 C98 116 102 116 104 112 L102 100Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<path d="M140 100 C144 98 146 106 144 112 C142 116 138 116 136 112 L138 100Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<path d="M104 124 C102 134 104 144 112 150 C120 154 128 152 134 146 C140 140 142 130 140 124 C136 122 128 124 120 124 C112 124 106 122 104 124Z" fill="#3d2510" opacity=".85"/>
+<path d="M112 118 C116 114 120 113 120 114 C120 113 124 114 128 118" fill="#3d2510" opacity=".7"/>
+<path d="M107 96 C110 92 116 92 118 96 C116 100 110 100 107 96Z" fill="#1a0c00"/>
+<path d="M122 96 C124 92 130 92 133 96 C130 100 124 100 122 96Z" fill="#1a0c00"/>
+<circle cx="112" cy="95" r="1.8" fill="#1a0c00"/><circle cx="127" cy="95" r="1.8" fill="#1a0c00"/>
+<circle cx="113" cy="94" r="1" fill="#fff" opacity=".7"/><circle cx="128" cy="94" r="1" fill="#fff" opacity=".7"/>
+<path d="M106 90 C110 86 116 86 120 88" stroke="#3d2510" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M120 88 C124 86 130 86 134 90" stroke="#3d2510" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M120 90 L118 102 C116 107 114 109 114 112 Q120 115 126 112 C126 109 124 107 122 102 Z" fill="#c8805a" opacity=".6"/>
+<path d="M113 119 C116 122 124 122 127 119" stroke="#8a4a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="140" y="18" font-family="Amiri,serif" font-size="11" fill="#C9A84C" opacity=".6" text-anchor="middle">سَمِعَ اللهُ لِمَنْ حَمِدَهُ</text>
+</svg>`,
+
+/* ══ SUJUD — full prostration ══ */
+sedzda:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 240" width="290" height="205">
+<defs>
+  <linearGradient id="skin6" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe6" x1="100%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/><stop offset="60%" stop-color="#d4c8b0"/><stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+</defs>
+<!-- ground & mat -->
+<line x1="8" y1="210" x2="332" y2="210" stroke="#C9A84C" stroke-width=".8" opacity=".2"/>
+<rect x="28" y="202" width="285" height="12" rx="4" fill="#1A7A6E" opacity=".2"/>
+<path d="M45 208 Q190 200 310 208" stroke="#26A99A" stroke-width=".8" fill="none" opacity=".3"/>
+<!-- mat mihrab arch -->
+<path d="M80 208 Q190 195 300 208" stroke="#C9A84C" stroke-width=".8" fill="none" opacity=".18"/>
+
+<!-- FEET — toes on ground, pointing to qibla -->
+<path d="M212 168 C214 190 218 204 220 210" stroke="#3a2810" stroke-width="16" stroke-linecap="round" fill="none"/>
+<path d="M256 168 C258 190 262 204 264 210" stroke="#3a2810" stroke-width="16" stroke-linecap="round" fill="none"/>
+<!-- feet flat showing soles/tops -->
+<ellipse cx="220" cy="210" rx="18" ry="6" fill="#3a2810" stroke="#C9A84C" stroke-width="1.2" opacity=".9"/>
+<ellipse cx="264" cy="210" rx="18" ry="6" fill="#3a2810" stroke="#C9A84C" stroke-width="1.2" opacity=".9"/>
+<text x="222" y="223" font-size="7.5" fill="#C9A84C" opacity=".5">prsti ka kibli</text>
+
+<!-- KNEES on mat -->
+<ellipse cx="210" cy="178" rx="20" ry="12" fill="#c0b098" stroke="#C9A84C" stroke-width="1.5"/>
+<ellipse cx="254" cy="178" rx="20" ry="12" fill="#c0b098" stroke="#C9A84C" stroke-width="1.5"/>
+
+<!-- THIGHS going up toward back -->
+<path d="M200 174 C190 148 180 128 174 110" stroke="#d4956a" stroke-width="22" stroke-linecap="round" fill="none"/>
+<path d="M244 174 C254 148 266 128 272 110" stroke="#d4956a" stroke-width="22" stroke-linecap="round" fill="none"/>
+
+<!-- BACK/TORSO going forward at angle, thobe draped -->
+<path d="M60 168 C80 155 130 138 200 126 L200 142 C130 154 80 170 60 182Z" fill="url(#thobe6)" stroke="#b8a888" stroke-width="1.5"/>
+<!-- cloth hanging from bent position -->
+<path d="M80 178 C78 192 80 206 82 210" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".4"/>
+<path d="M110 172 C108 186 110 200 112 208" stroke="#b8a888" stroke-width="1" fill="none" opacity=".35"/>
+<path d="M140 168 C138 182 140 196 142 206" stroke="#b8a888" stroke-width="1" fill="none" opacity=".3"/>
+<path d="M170 162 C168 175 170 190 172 202" stroke="#b8a888" stroke-width="1" fill="none" opacity=".25"/>
+
+<!-- ARMS: upper arm visible, forearms on mat -->
+<!-- left arm -->
+<path d="M64 172 C55 180 46 190 44 200" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M64 172 C55 180 46 190 44 200" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<!-- left forearm on mat -->
+<path d="M44 200 C42 206 42 210 44 210" stroke="#d4956a" stroke-width="12" stroke-linecap="round" fill="none"/>
+<!-- elbow RAISED annotation -->
+<path d="M56 178 L52 162" stroke="#C9A84C" stroke-width="1.2" stroke-dasharray="3,3" opacity=".55"/>
+<text x="24" y="160" font-size="8.5" fill="#C9A84C" opacity=".55">laktovi</text>
+<text x="28" y="170" font-size="8.5" fill="#C9A84C" opacity=".55">gore!</text>
+<!-- LEFT HAND flat on mat, fingers spread forward -->
+<path d="M30 206 C30 198 38 194 46 194 C54 194 58 198 58 206 L56 212 C50 216 36 216 32 212Z" fill="url(#skin6)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="33" y1="197" x2="30" y2="188" stroke="#d4956a" stroke-width="3" stroke-linecap="round"/>
+<line x1="38" y1="194" x2="36" y2="185" stroke="#d4956a" stroke-width="3" stroke-linecap="round"/>
+<line x1="44" y1="193" x2="44" y2="184" stroke="#d4956a" stroke-width="3" stroke-linecap="round"/>
+<line x1="50" y1="194" x2="51" y2="185" stroke="#d4956a" stroke-width="3" stroke-linecap="round"/>
+<line x1="55" y1="197" x2="58" y2="189" stroke="#d4956a" stroke-width="3" stroke-linecap="round"/>
+<!-- right arm -->
+<path d="M64 166 C56 172 50 180 48 194" stroke="#d4956a" stroke-width="13" stroke-linecap="round" fill="none"/>
+<path d="M64 166 C56 172 50 180 48 194" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+
+<!-- NECK going down -->
+<path d="M56 162 C52 172 52 180 56 186" stroke="#d4956a" stroke-width="12" stroke-linecap="round" fill="none"/>
+
+<!-- HEAD — forehead/nose touching mat (side view) -->
+<ellipse cx="46" cy="188" rx="26" ry="24" fill="url(#skin6)" stroke="#a07848" stroke-width="1.2"/>
+<!-- KUFI from side/top -->
+<path d="M22 178 C24 158 34 148 46 146 C58 144 68 156 70 174 L70 178 C58 172 34 172 22 178Z" fill="#2d5a4a"/>
+<path d="M22 178 C34 174 58 174 70 178" stroke="#C9A84C" stroke-width="1" fill="none" opacity=".5"/>
+<!-- ear from side -->
+<path d="M68 186 C72 184 74 192 72 198 C70 202 66 202 64 198 L66 186Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<!-- BEARD hanging down with gravity -->
+<path d="M28 196 C26 208 28 218 34 224 C42 230 52 228 58 222 C64 216 66 206 64 196 C58 194 50 196 42 196 C34 196 28 194 28 196Z" fill="#3d2510" opacity=".85"/>
+<!-- eyes - side view -->
+<ellipse cx="36" cy="186" rx="5" ry="4" fill="#1a0c00"/>
+<circle cx="37" cy="185" r="1.2" fill="#fff" opacity=".7"/>
+<!-- nose side profile -->
+<path d="M44 182 C46 188 46 194 44 198" stroke="#c8805a" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/>
+
+<!-- FOREHEAD touching mat — contact point GOLDEN -->
+<ellipse cx="46" cy="210" rx="18" ry="6" fill="#C9A84C" opacity=".45"/>
+<text x="32" y="228" font-size="8" fill="#C9A84C" opacity=".6">čelo i nos</text>
+
+<!-- 7 BODY PARTS markers -->
+<circle cx="46" cy="210" r="5.5" fill="none" stroke="#C9A84C" stroke-width="2" opacity=".9"/>
+<circle cx="46" cy="210" r="2.5" fill="#C9A84C" opacity=".8"/>
+<circle cx="32" cy="210" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity=".7"/>
+<circle cx="32" cy="210" r="2" fill="#C9A84C" opacity=".6"/>
+<circle cx="56" cy="210" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity=".7"/>
+<circle cx="56" cy="210" r="2" fill="#C9A84C" opacity=".6"/>
+<circle cx="208" cy="210" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity=".65"/>
+<circle cx="208" cy="210" r="2" fill="#C9A84C" opacity=".55"/>
+<circle cx="232" cy="210" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity=".65"/>
+<circle cx="232" cy="210" r="2" fill="#C9A84C" opacity=".55"/>
+<circle cx="252" cy="210" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity=".62"/>
+<circle cx="252" cy="210" r="2" fill="#C9A84C" opacity=".52"/>
+<circle cx="276" cy="210" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity=".62"/>
+<circle cx="276" cy="210" r="2" fill="#C9A84C" opacity=".52"/>
+
+<text x="8" y="14" font-size="9" fill="#C9A84C" opacity=".6">7 dijelova tijela dodiruju tlo:</text>
+<text x="8" y="26" font-size="8" fill="#C9A84C" opacity=".4">čelo+nos • 2 dlana • 2 koljena • 2 stopala</text>
+<text x="190" y="50" font-family="Amiri,serif" font-size="13" fill="#C9A84C" opacity=".6" text-anchor="middle">سُبْحَانَ رَبِّيَ الأَعْلَى</text>
+</svg>`,
+
+/* ══ JULUS/DZELEK — sitting between sujud ══ */
+dzelek:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290" width="248" height="248">
+<defs>
+  <linearGradient id="skin7" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe7" x1="0%" y1="0%" x2="15%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/><stop offset="60%" stop-color="#d4c8b0"/><stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+</defs>
+<line x1="10" y1="258" x2="280" y2="258" stroke="#C9A84C" stroke-width=".8" opacity=".2"/>
+<rect x="30" y="250" width="228" height="12" rx="3" fill="#1A7A6E" opacity=".18"/>
+<path d="M45 256 Q145 250 245 256" stroke="#26A99A" stroke-width=".8" fill="none" opacity=".3"/>
+
+<!-- LEFT FOOT — iftirash: lying flat tucked behind, inner edge visible -->
+<path d="M95 220 C80 228 66 238 58 250" stroke="#3a2810" stroke-width="14" stroke-linecap="round" fill="none"/>
+<!-- left foot flat on mat -->
+<path d="M44 248 C48 244 58 242 68 246 C72 250 68 256 58 256 C48 256 42 254 44 248Z" fill="#3a2810" stroke="#26A99A" stroke-width="1"/>
+<text x="34" y="268" font-size="7.5" fill="#C9A84C" opacity=".45">lijeva noga legla</text>
+
+<!-- RIGHT FOOT — upright: ball of foot and toes on mat, heel raised -->
+<path d="M180 215 C188 232 192 245 190 255" stroke="#3a2810" stroke-width="14" stroke-linecap="round" fill="none"/>
+<!-- right foot standing on toes -->
+<path d="M184 250 C188 244 196 242 200 248 C202 254 198 258 190 258 C186 258 182 256 184 250Z" fill="#3a2810" stroke="#C9A84C" stroke-width="1.2" opacity=".85"/>
+<text x="188" y="272" font-size="7.5" fill="#C9A84C" opacity=".45">desno stopalo uspravno</text>
+
+<!-- SITTING BODY — lower body on mat -->
+<path d="M88 222 C76 235 64 248 62 256 L198 256 C196 248 182 232 172 218 Z" fill="url(#thobe7)" stroke="#b8a888" stroke-width="1.2"/>
+<path d="M82 238 C80 248 80 254 82 256" stroke="#b8a888" stroke-width="1" fill="none" opacity=".4"/>
+<path d="M160 232 C162 244 162 252 160 256" stroke="#b8a888" stroke-width="1" fill="none" opacity=".35"/>
+
+<!-- TORSO -->
+<path d="M92 130 C88 165 86 195 88 222 L172 218 C174 192 172 162 168 130Z" fill="url(#thobe7)" stroke="#b8a888" stroke-width="1.2"/>
+<path d="M92 148 C90 175 90 200 91 220" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".4"/>
+<path d="M168 148 C170 175 170 200 169 218" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".4"/>
+<path d="M105 130 L130 146 L155 130" fill="none" stroke="#a89878" stroke-width="1.5" opacity=".6"/>
+
+<!-- LEFT ARM on left thigh, hand open -->
+<path d="M92 148 C82 172 76 194 74 215" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M92 148 C82 172 76 194 74 215" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<!-- sleeve -->
+<path d="M88 144 C78 168 72 192 70 213 L76 217 C78 196 84 172 94 150Z" fill="url(#thobe7)" stroke="#b8a888" stroke-width=".8" opacity=".7"/>
+<!-- left hand -->
+<path d="M62 213 C60 205 62 197 68 195 C74 193 80 197 80 205 L78 218 C74 222 64 220 62 213Z" fill="url(#skin7)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="64" y1="197" x2="62" y2="188" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="68" y1="195" x2="67" y2="186" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="73" y1="194" x2="73" y2="185" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="77" y1="195" x2="78" y2="186" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+
+<!-- RIGHT ARM on right thigh -->
+<path d="M168 148 C178 172 184 194 186 215" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M168 148 C178 172 184 194 186 215" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<path d="M172 144 C182 168 188 192 190 213 L184 217 C182 196 176 172 166 150Z" fill="url(#thobe7)" stroke="#b8a888" stroke-width=".8" opacity=".7"/>
+<!-- right hand -->
+<path d="M198 213 C200 205 198 197 192 195 C186 193 180 197 180 205 L182 218 C186 222 196 220 198 213Z" fill="url(#skin7)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="196" y1="197" x2="198" y2="188" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="192" y1="195" x2="193" y2="186" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="187" y1="194" x2="187" y2="185" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="183" y1="195" x2="182" y2="186" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+
+<!-- NECK -->
+<path d="M118 114 L118 132 C121 136 139 136 142 132 L142 114 C142 108 118 108 118 114Z" fill="url(#skin7)"/>
+
+<!-- HEAD -->
+<path d="M106 88 C104 70 110 52 130 46 C150 40 162 52 164 70 C166 88 160 108 150 114 C140 120 112 120 106 108Z" fill="url(#skin7)" stroke="#a07848" stroke-width="1"/>
+<path d="M110 108 C112 118 130 122 148 118 C154 115 158 110 156 108" fill="url(#skin7)"/>
+<!-- KUFI -->
+<path d="M104 80 C104 60 112 48 130 46 C148 44 158 56 158 76 L158 82 C148 76 112 76 104 82Z" fill="#2d5a4a"/>
+<path d="M104 82 C112 78 148 78 158 82" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity=".5"/>
+<path d="M104 86 C100 84 98 92 100 98 C102 102 106 102 108 98 L106 86Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<path d="M156 86 C160 84 162 92 160 98 C158 102 154 102 152 98 L154 86Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<!-- BEARD -->
+<path d="M108 108 C106 118 108 128 116 134 C130 140 144 136 150 128 C156 120 158 110 156 108 C150 106 142 108 130 108 C118 108 110 106 108 108Z" fill="#3d2510" opacity=".85"/>
+<path d="M114 112 C114 122 118 130 130 132" stroke="#5a3518" stroke-width="1" fill="none" opacity=".4"/>
+<path d="M146 112 C146 122 142 130 130 132" stroke="#5a3518" stroke-width="1" fill="none" opacity=".4"/>
+<path d="M116 102 C120 98 126 97 130 98 C134 97 138 98 144 102" fill="#3d2510" opacity=".7"/>
+<!-- FACE -->
+<path d="M112 80 C116 76 122 76 126 78" stroke="#3d2510" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M134 78 C138 76 144 76 148 80" stroke="#3d2510" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M111 86 C114 82 120 82 122 86 C120 90 114 90 111 86Z" fill="#1a0c00"/>
+<path d="M138 86 C140 82 146 82 149 86 C146 90 140 90 138 86Z" fill="#1a0c00"/>
+<circle cx="116" cy="85" r="1.8" fill="#1a0c00"/><circle cx="143" cy="85" r="1.8" fill="#1a0c00"/>
+<circle cx="117" cy="84" r="1" fill="#fff" opacity=".7"/><circle cx="144" cy="84" r="1" fill="#fff" opacity=".7"/>
+<path d="M130 88 L128 100 C126 105 130 108 130 108 C130 108 134 105 132 100 Z" fill="#c8805a" opacity=".6"/>
+<path d="M121 106 C125 109 135 109 139 106" stroke="#8a4a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="145" y="18" font-family="Amiri,serif" font-size="12" fill="#C9A84C" opacity=".55" text-anchor="middle">رَبِّ اغْفِرْ لِي</text>
+</svg>`,
+
+/* ══ QA'DA / TASHAHHUD — index finger raised ══ */
+kade:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290" width="248" height="248">
+<defs>
+  <linearGradient id="skin8" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe8" x1="0%" y1="0%" x2="15%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/><stop offset="60%" stop-color="#d4c8b0"/><stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+  <radialGradient id="fingerG" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#C9A84C" stop-opacity=".7"/>
+    <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<!-- completion aura -->
+<circle cx="145" cy="155" r="88" fill="none" stroke="#C9A84C" stroke-width=".8" stroke-dasharray="4,10" opacity=".2"/>
+<line x1="10" y1="258" x2="280" y2="258" stroke="#C9A84C" stroke-width=".8" opacity=".2"/>
+<rect x="30" y="250" width="228" height="12" rx="3" fill="#1A7A6E" opacity=".18"/>
+
+<!-- FEET same as dzelek -->
+<path d="M95 220 C80 228 66 238 58 250" stroke="#3a2810" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M44 248 C48 244 58 242 68 246 C72 250 68 256 58 256 C48 256 42 254 44 248Z" fill="#3a2810" stroke="#26A99A" stroke-width="1"/>
+<path d="M180 215 C188 232 192 245 190 255" stroke="#3a2810" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M184 250 C188 244 196 242 200 248 C202 254 198 258 190 258 C186 258 182 256 184 250Z" fill="#3a2810" stroke="#C9A84C" stroke-width="1.2" opacity=".85"/>
+
+<!-- BODY sitting -->
+<path d="M88 222 C76 235 64 248 62 256 L198 256 C196 248 182 232 172 218 Z" fill="url(#thobe8)" stroke="#b8a888" stroke-width="1.2"/>
+<path d="M92 130 C88 165 86 195 88 222 L172 218 C174 192 172 162 168 130Z" fill="url(#thobe8)" stroke="#b8a888" stroke-width="1.2"/>
+<path d="M105 130 L130 146 L155 130" fill="none" stroke="#a89878" stroke-width="1.5" opacity=".6"/>
+<path d="M92 148 C90 175 90 200 91 220" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".35"/>
+<path d="M168 148 C170 175 170 200 169 218" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".35"/>
+
+<!-- LEFT ARM open hand on thigh -->
+<path d="M92 148 C82 172 76 194 74 215" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M92 148 C82 172 76 194 74 215" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<path d="M88 144 C78 168 72 192 70 213 L76 217 C78 196 84 172 94 150Z" fill="url(#thobe8)" stroke="#b8a888" stroke-width=".8" opacity=".7"/>
+<path d="M62 213 C60 205 62 197 68 195 C74 193 80 197 80 205 L78 218 C74 222 64 220 62 213Z" fill="url(#skin8)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="64" y1="197" x2="62" y2="188" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="68" y1="195" x2="67" y2="186" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="73" y1="194" x2="73" y2="185" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="77" y1="195" x2="78" y2="186" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+
+<!-- RIGHT ARM — fist with raised index finger -->
+<path d="M168 148 C178 172 184 194 186 215" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M168 148 C178 172 184 194 186 215" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<path d="M172 144 C182 168 188 192 190 213 L184 217 C182 196 176 172 166 150Z" fill="url(#thobe8)" stroke="#b8a888" stroke-width=".8" opacity=".7"/>
+<!-- FIST -->
+<path d="M182 212 C184 204 190 200 196 200 C204 200 208 206 206 214 L202 222 C196 226 184 224 182 218Z" fill="url(#skin8)" stroke="#a07848" stroke-width="1.2"/>
+<!-- curled fingers detail -->
+<path d="M184 204 C184 210 186 216 188 218" stroke="#a07848" stroke-width="1.5" fill="none" opacity=".5"/>
+<path d="M190 202 C190 208 192 214 194 216" stroke="#a07848" stroke-width="1.5" fill="none" opacity=".5"/>
+<path d="M196 202 C198 208 200 214 202 216" stroke="#a07848" stroke-width="1.5" fill="none" opacity=".5"/>
+<!-- thumb tucked -->
+<path d="M182 214 C180 210 182 206 186 208" stroke="#b8724a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+<!-- INDEX FINGER RAISED — tawhid/shahada gesture -->
+<line x1="185" y1="212" x2="180" y2="184" stroke="#d4956a" stroke-width="7" stroke-linecap="round"/>
+<line x1="185" y1="212" x2="180" y2="184" stroke="#b8724a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+<!-- fingernail -->
+<ellipse cx="180" cy="182" rx="4" ry="5" fill="#c8a882" stroke="#a07848" stroke-width="1"/>
+<!-- GLOW around finger (tawhid) -->
+<circle cx="180" cy="178" r="16" fill="url(#fingerG)"/>
+<circle cx="180" cy="182" r="6" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity=".6"/>
+<!-- annotation -->
+<text x="198" y="190" font-size="9" fill="#C9A84C" opacity=".7">kažiprst</text>
+<text x="198" y="201" font-size="9" fill="#C9A84C" opacity=".55">kod "illAllah"</text>
+
+<!-- NECK -->
+<path d="M118 114 L118 132 C121 136 139 136 142 132 L142 114 C142 108 118 108 118 114Z" fill="url(#skin8)"/>
+<!-- HEAD (same detailed head) -->
+<path d="M106 88 C104 70 110 52 130 46 C150 40 162 52 164 70 C166 88 160 108 150 114 C140 120 112 120 106 108Z" fill="url(#skin8)" stroke="#a07848" stroke-width="1"/>
+<path d="M110 108 C112 118 130 122 148 118 C154 115 158 110 156 108" fill="url(#skin8)"/>
+<path d="M104 80 C104 60 112 48 130 46 C148 44 158 56 158 76 L158 82 C148 76 112 76 104 82Z" fill="#2d5a4a"/>
+<path d="M104 82 C112 78 148 78 158 82" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity=".5"/>
+<path d="M104 86 C100 84 98 92 100 98 C102 102 106 102 108 98 L106 86Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<path d="M156 86 C160 84 162 92 160 98 C158 102 154 102 152 98 L154 86Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<path d="M108 108 C106 118 108 128 116 134 C130 140 144 136 150 128 C156 120 158 110 156 108 C150 106 142 108 130 108 C118 108 110 106 108 108Z" fill="#3d2510" opacity=".85"/>
+<path d="M116 102 C120 98 126 97 130 98 C134 97 138 98 144 102" fill="#3d2510" opacity=".7"/>
+<path d="M112 80 C116 76 122 76 126 78" stroke="#3d2510" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M134 78 C138 76 144 76 148 80" stroke="#3d2510" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M111 86 C114 82 120 82 122 86 C120 90 114 90 111 86Z" fill="#1a0c00"/>
+<path d="M138 86 C140 82 146 82 149 86 C146 90 140 90 138 86Z" fill="#1a0c00"/>
+<circle cx="116" cy="85" r="1.8" fill="#1a0c00"/><circle cx="143" cy="85" r="1.8" fill="#1a0c00"/>
+<circle cx="117" cy="84" r="1" fill="#fff" opacity=".7"/><circle cx="144" cy="84" r="1" fill="#fff" opacity=".7"/>
+<path d="M130 88 L128 100 C126 105 130 108 130 108 C130 108 134 105 132 100 Z" fill="#c8805a" opacity=".6"/>
+<path d="M121 106 C125 109 135 109 139 106" stroke="#8a4a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="145" y="18" font-family="Amiri,serif" font-size="12" fill="#C9A84C" opacity=".55" text-anchor="middle">اَلتَّحِيَّات</text>
+</svg>`,
+
+/* ══ SALAM — head turned right ══ */
+selam:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 295" width="265" height="253">
+<defs>
+  <linearGradient id="skin9" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe9" x1="0%" y1="0%" x2="15%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/><stop offset="60%" stop-color="#d4c8b0"/><stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+</defs>
+<line x1="10" y1="265" x2="300" y2="265" stroke="#C9A84C" stroke-width=".8" opacity=".2"/>
+<rect x="30" y="257" width="248" height="12" rx="3" fill="#1A7A6E" opacity=".18"/>
+
+<!-- FEET -->
+<path d="M105 228 C90 236 76 246 68 258" stroke="#3a2810" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M54 256 C58 252 68 250 78 254 C82 258 78 264 68 264 C58 264 52 262 54 256Z" fill="#3a2810" stroke="#26A99A" stroke-width="1"/>
+<path d="M190 222 C198 240 202 252 200 262" stroke="#3a2810" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M194 258 C198 252 206 250 210 256 C212 262 208 266 200 266 C196 266 192 264 194 258Z" fill="#3a2810" stroke="#26A99A" stroke-width="1"/>
+
+<!-- BODY -->
+<path d="M98 230 C86 243 74 256 72 264 L208 264 C206 256 192 240 182 226 Z" fill="url(#thobe9)" stroke="#b8a888" stroke-width="1.2"/>
+<path d="M102 137 C98 173 96 203 98 230 L182 226 C184 200 182 170 178 137Z" fill="url(#thobe9)" stroke="#b8a888" stroke-width="1.2"/>
+<path d="M115 137 L140 153 L165 137" fill="none" stroke="#a89878" stroke-width="1.5" opacity=".6"/>
+<path d="M102 155 C100 182 100 208 101 228" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".35"/>
+<path d="M178 155 C180 182 180 208 179 226" stroke="#b8a888" stroke-width="1.2" fill="none" opacity=".35"/>
+
+<!-- ARMS on thighs -->
+<path d="M102 155 C92 179 86 201 84 222" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M88 151 C78 175 72 199 70 220 L76 224 C78 202 84 178 94 153Z" fill="url(#thobe9)" stroke="#b8a888" stroke-width=".8" opacity=".7"/>
+<path d="M72 220 C70 212 72 204 78 202 C84 200 90 204 90 212 L88 224 C84 228 74 226 72 220Z" fill="url(#skin9)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="74" y1="204" x2="72" y2="195" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="78" y1="202" x2="77" y2="193" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="83" y1="201" x2="83" y2="192" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="87" y1="202" x2="88" y2="193" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<path d="M178 155 C188 179 194 201 196 222" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M182 151 C192 175 198 199 200 220 L194 224 C192 202 186 178 176 153Z" fill="url(#thobe9)" stroke="#b8a888" stroke-width=".8" opacity=".7"/>
+<path d="M208 220 C210 212 208 204 202 202 C196 200 190 204 190 212 L192 224 C196 228 206 226 208 220Z" fill="url(#skin9)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="206" y1="204" x2="208" y2="195" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="202" y1="202" x2="203" y2="193" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="197" y1="201" x2="197" y2="192" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="193" y1="202" x2="192" y2="193" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+
+<!-- NECK — rotated right with head -->
+<path d="M128 120 C130 126 136 132 148 130 L152 120 C148 114 130 114 128 120Z" fill="url(#skin9)"/>
+
+<!-- HEAD TURNED RIGHT — offset center, facing right -->
+<path d="M124 94 C122 76 130 58 148 52 C166 46 178 58 178 78 C178 96 172 116 160 122 C148 128 120 128 116 116Z" fill="url(#skin9)" stroke="#a07848" stroke-width="1"/>
+<path d="M120 116 C124 126 148 130 164 126 C170 123 174 118 172 116" fill="url(#skin9)"/>
+<!-- KUFI turned right -->
+<path d="M122 86 C124 66 132 54 148 52 C164 50 174 62 174 80 L174 86 C164 80 130 80 122 86Z" fill="#2d5a4a"/>
+<path d="M122 86 C130 82 164 82 174 86" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity=".5"/>
+<!-- right ear now more visible (turned right) -->
+<path d="M172 96 C176 94 178 102 176 108 C174 112 170 112 168 108 L170 96Z" fill="#c8805a" stroke="#C9A84C" stroke-width="1.2"/>
+<!-- left ear less visible -->
+<path d="M122 96 C118 94 116 100 118 106 C120 110 124 110 124 106 L122 96Z" fill="#c8805a" stroke="#a07848" stroke-width=".8" opacity=".7"/>
+<!-- BEARD turned right, more visible on right side -->
+<path d="M122 116 C120 126 122 136 130 142 C142 148 156 144 162 138 C170 130 172 118 170 116 C162 114 154 116 148 116 C138 116 126 114 122 116Z" fill="#3d2510" opacity=".85"/>
+<path d="M128 120 C128 130 132 138 148 140" stroke="#5a3518" stroke-width="1" fill="none" opacity=".4"/>
+<path d="M124 112 C128 108 134 107 148 108 C154 107 158 108 162 112" fill="#3d2510" opacity=".7"/>
+<!-- FACE turned right — eyes offset right -->
+<path d="M134 84 C137 80 143 80 146 84 C143 88 137 88 134 84Z" fill="#1a0c00"/>
+<path d="M150 84 C153 80 159 80 162 84 C159 88 153 88 150 84Z" fill="#1a0c00"/>
+<circle cx="139" cy="83" r="1.8" fill="#1a0c00"/><circle cx="155" cy="83" r="1.8" fill="#1a0c00"/>
+<circle cx="140" cy="82" r="1" fill="#fff" opacity=".7"/><circle cx="156" cy="82" r="1" fill="#fff" opacity=".7"/>
+<path d="M133 78 C137 74 142 74 146 76" stroke="#3d2510" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M150 76 C154 74 160 74 164 78" stroke="#3d2510" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M148 80 L147 92 C145 97 148 100 148 100 C148 100 151 97 150 92 Z" fill="#c8805a" opacity=".6"/>
+<path d="M141 106 C145 109 151 109 155 106" stroke="#8a4a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+<!-- GHOST HEAD outline — turning left -->
+<ellipse cx="116" cy="88" rx="24" ry="26" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,5" opacity=".35"/>
+<path d="M96 80 C100 60 108 50 116 50 L116 54 C108 54 100 64 96 84Z" fill="none" stroke="#C9A84C" stroke-width=".8" stroke-dasharray="3,4" opacity=".25"/>
+
+<!-- ARROWS showing head rotation -->
+<path d="M175 72 C198 60 196 88 184 100" stroke="#C9A84C" stroke-width="2.2" fill="none" marker-end="url(#arr1)" opacity=".75"/>
+<defs>
+  <marker id="arr1" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#C9A84C"/></marker>
+  <marker id="arr2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#C9A84C" opacity=".5"/></marker>
+</defs>
+<path d="M121 74 C98 62 100 88 112 100" stroke="#C9A84C" stroke-width="1.8" fill="none" marker-end="url(#arr2)" opacity=".5"/>
+
+<text x="208" y="62" font-size="9" fill="#C9A84C" opacity=".7">1. desno →</text>
+<text x="36" y="62" font-size="9" fill="#C9A84C" opacity=".5">← 2. lijevo</text>
+<text x="155" y="18" font-family="Amiri,serif" font-size="12" fill="#C9A84C" opacity=".6" text-anchor="middle">اَلسَّلَامُ عَلَيْكُمْ</text>
+</svg>`,
+
+/* ══ HUTBA — imam on mimbar with turban ══ */
+hutba:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 280" width="258" height="240">
+<defs>
+  <linearGradient id="skin10" x1="0%" y1="0%" x2="30%" y2="100%">
+    <stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b8724a"/>
+  </linearGradient>
+  <linearGradient id="thobe10" x1="0%" y1="0%" x2="15%" y2="100%">
+    <stop offset="0%" stop-color="#e8e0d0"/><stop offset="50%" stop-color="#d4c8b0"/><stop offset="100%" stop-color="#c0b098"/>
+  </linearGradient>
+  <linearGradient id="mimbarG" x1="0%" y1="0%" x2="20%" y2="100%">
+    <stop offset="0%" stop-color="#2a5040"/><stop offset="100%" stop-color="#142a20"/>
+  </linearGradient>
+</defs>
+<!-- ground -->
+<line x1="8" y1="260" x2="292" y2="260" stroke="#C9A84C" stroke-width=".8" opacity=".2"/>
+
+<!-- MIMBAR — 3-step wooden pulpit -->
+<!-- Main body -->
+<path d="M86 135 L86 258 L214 258 L214 135 C214 130 86 130 86 135Z" fill="url(#mimbarG)" stroke="#26A99A" stroke-width="1.5"/>
+<!-- decorative arch panel -->
+<path d="M100 145 Q150 132 200 145 L200 255 L100 255Z" fill="none" stroke="#26A99A" stroke-width=".8" opacity=".25"/>
+<path d="M108 158 Q150 148 192 158 L192 252 L108 252Z" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".2"/>
+<!-- top platform -->
+<path d="M82 128 L218 128 L218 136 L82 136Z" fill="#2a5040" stroke="#26A99A" stroke-width="1.2"/>
+<!-- railing left post -->
+<rect x="88" y="100" width="8" height="36" rx="4" fill="#1A7A6E" opacity=".8"/>
+<!-- railing right post -->
+<rect x="204" y="100" width="8" height="36" rx="4" fill="#1A7A6E" opacity=".8"/>
+<!-- top rail -->
+<rect x="88" y="98" width="124" height="6" rx="3" fill="#26A99A" opacity=".8"/>
+<!-- ornamental rail arch -->
+<path d="M96 104 Q150 88 204 104" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity=".45"/>
+<!-- Steps going left -->
+<path d="M68 165 L86 165 L86 258 L68 258Z" fill="#224438" stroke="#26A99A" stroke-width="1"/>
+<path d="M52 195 L70 195 L70 258 L52 258Z" fill="#1a3428" stroke="#26A99A" stroke-width="1"/>
+<path d="M36 222 L54 222 L54 258 L36 258Z" fill="#142a20" stroke="#26A99A" stroke-width="1"/>
+<line x1="68" y1="195" x2="88" y2="195" stroke="#26A99A" stroke-width=".8" opacity=".5"/>
+<line x1="52" y1="222" x2="70" y2="222" stroke="#26A99A" stroke-width=".8" opacity=".5"/>
+<!-- Arabic calligraphy on mimbar -->
+<text x="150" y="200" font-family="Amiri,serif" font-size="18" fill="#C9A84C" opacity=".12" text-anchor="middle">الله</text>
+
+<!-- IMAM standing on mimbar platform -->
+<!-- feet on platform -->
+<ellipse cx="138" cy="136" rx="12" ry="5" fill="#3a2810" stroke="#26A99A" stroke-width=".8"/>
+<ellipse cx="162" cy="136" rx="12" ry="5" fill="#3a2810" stroke="#26A99A" stroke-width=".8"/>
+<!-- THOBE long robe on platform -->
+<path d="M120 98 C118 112 116 126 116 134 L184 134 C184 126 182 112 180 98Z" fill="url(#thobe10)" stroke="#b8a888" stroke-width="1.2"/>
+<path d="M122 110 L178 110" stroke="#b8a888" stroke-width=".8" opacity=".3"/>
+<path d="M133 98 L150 112 L167 98" fill="none" stroke="#a89878" stroke-width="1.5" opacity=".6"/>
+
+<!-- LEFT ARM — slightly out, gesturing downward/open -->
+<path d="M120 106 C106 108 95 112 88 120" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M120 106 C106 108 95 112 88 120" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<!-- sleeve -->
+<path d="M117 102 C103 106 92 110 86 118 L90 124 C96 116 107 112 121 110Z" fill="url(#thobe10)" stroke="#b8a888" stroke-width=".8" opacity=".8"/>
+<!-- left hand open/gesturing -->
+<path d="M80 118 C76 112 78 104 84 102 C90 100 96 104 96 112 L94 122 C90 126 82 124 80 118Z" fill="url(#skin10)" stroke="#a07848" stroke-width="1.2"/>
+<line x1="82" y1="103" x2="79" y2="94" stroke="#d4956a" stroke-width="3" stroke-linecap="round"/>
+<line x1="86" y1="101" x2="84" y2="92" stroke="#d4956a" stroke-width="3" stroke-linecap="round"/>
+<line x1="91" y1="101" x2="91" y2="92" stroke="#d4956a" stroke-width="3" stroke-linecap="round"/>
+
+<!-- RIGHT ARM — raised, index finger pointing up (emphasizing a point) -->
+<path d="M180 106 C192 100 202 94 210 84" stroke="#d4956a" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M180 106 C192 100 202 94 210 84" stroke="#b8a888" stroke-width="1.2" fill="none"/>
+<path d="M183 102 C195 96 204 90 212 82 L208 78 C200 88 190 94 178 102Z" fill="url(#thobe10)" stroke="#b8a888" stroke-width=".8" opacity=".8"/>
+<!-- pointing hand -->
+<path d="M206 82 C208 74 214 68 218 70 C222 72 220 80 216 86 L210 88Z" fill="url(#skin10)" stroke="#a07848" stroke-width="1.2"/>
+<!-- raised index finger -->
+<line x1="212" y1="74" x2="214" y2="60" stroke="#d4956a" stroke-width="5" stroke-linecap="round"/>
+<line x1="212" y1="74" x2="214" y2="60" stroke="#a07848" stroke-width="1" fill="none" stroke-linecap="round"/>
+<ellipse cx="214" cy="58" rx="4" ry="5" fill="#c8a882" stroke="#a07848" stroke-width="1"/>
+<line x1="218" y1="72" x2="224" y2="66" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="216" y1="78" x2="223" y2="76" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="210" y1="82" x2="216" y2="86" stroke="#d4956a" stroke-width="3.5" stroke-linecap="round"/>
+
+<!-- NECK -->
+<path d="M145 83 L145 100 C148 104 156 104 159 100 L159 83 C159 78 145 78 145 83Z" fill="url(#skin10)"/>
+
+<!-- HEAD with TURBAN (imama) — white layered turban -->
+<!-- head base -->
+<ellipse cx="152" cy="64" rx="24" ry="26" fill="url(#skin10)" stroke="#a07848" stroke-width="1"/>
+<!-- TURBAN layers — multiple wraps -->
+<path d="M130 58 C132 38 142 28 152 26 C162 24 172 34 174 54 L174 60 C164 52 140 52 130 60Z" fill="#f0e8d8" stroke="#C9A84C" stroke-width="1.2"/>
+<path d="M132 56 C134 40 142 32 152 30 C162 28 170 38 172 54" stroke="#ddd0b8" stroke-width="1.5" fill="none" opacity=".6"/>
+<path d="M134 58 C136 44 142 36 152 34 C162 32 168 42 168 56" stroke="#ccc0a8" stroke-width="1.2" fill="none" opacity=".5"/>
+<!-- turban end piece hanging on left -->
+<path d="M130 58 C124 64 122 72 124 80 C126 86 130 88 132 84 C134 80 134 70 132 62Z" fill="#f0e8d8" stroke="#C9A84C" stroke-width="1" opacity=".85"/>
+<path d="M131 66 C130 72 131 78 132 82" stroke="#ddd0b8" stroke-width=".8" fill="none" opacity=".6"/>
+<!-- turban knot/center decoration -->
+<ellipse cx="152" cy="34" rx="8" ry="6" fill="#e0d8c0" stroke="#C9A84C" stroke-width="1" opacity=".8"/>
+
+<!-- EARS -->
+<path d="M130 70 C126 68 124 76 126 82 C128 86 132 86 132 82 L130 70Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+<path d="M174 70 C178 68 180 76 178 82 C176 86 172 86 172 82 L174 70Z" fill="#c8805a" stroke="#a07848" stroke-width=".8"/>
+
+<!-- BEARD — long scholarly beard -->
+<path d="M132 80 C130 92 132 104 140 112 C148 118 158 116 164 108 C170 100 172 90 170 80 C162 78 152 80 146 80 C140 80 134 78 132 80Z" fill="#3d2510" opacity=".9"/>
+<path d="M136 84 C136 96 140 108 148 114" stroke="#5a3518" stroke-width="1.2" fill="none" opacity=".45"/>
+<path d="M164 84 C164 96 160 108 148 114" stroke="#5a3518" stroke-width="1.2" fill="none" opacity=".45"/>
+<!-- beard splits at chin -->
+<path d="M144 112 C146 118 148 122 148 122 C148 122 150 118 152 112" stroke="#5a3518" stroke-width="1.5" fill="none" opacity=".4"/>
+<path d="M136 74 C140 70 146 69 152 70 C154 69 158 70 164 74" fill="#3d2510" opacity=".7"/>
+
+<!-- FACE -->
+<path d="M137 60 C141 56 147 56 150 58" stroke="#3d2510" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M154 58 C157 56 163 56 167 60" stroke="#3d2510" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M137 66 C140 62 146 62 148 66 C146 70 140 70 137 66Z" fill="#1a0c00"/>
+<path d="M156 66 C158 62 164 62 167 66 C164 70 158 70 156 66Z" fill="#1a0c00"/>
+<circle cx="142" cy="65" r="1.8" fill="#1a0c00"/><circle cx="161" cy="65" r="1.8" fill="#1a0c00"/>
+<circle cx="143" cy="64" r="1" fill="#fff" opacity=".7"/><circle cx="162" cy="64" r="1" fill="#fff" opacity=".7"/>
+<path d="M152 68 L150 78 C148 82 152 84 152 84 C152 84 156 82 154 78 Z" fill="#c8805a" opacity=".6"/>
+<path d="M144 76 C147 79 157 79 160 76" stroke="#8a4a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+<!-- speech waves -->
+<path d="M225 66 Q236 62 225 56" stroke="#C9A84C" stroke-width="1.5" fill="none" opacity=".45"/>
+<path d="M230 68 Q244 62 230 54" stroke="#C9A84C" stroke-width="1.2" fill="none" opacity=".3"/>
+<path d="M235 70 Q252 62 235 52" stroke="#C9A84C" stroke-width=".9" fill="none" opacity=".18"/>
+
+<text x="150" y="18" font-family="Amiri,serif" font-size="13" fill="#C9A84C" opacity=".65" text-anchor="middle">اَلْخُطْبَة</text>
+<text x="150" y="276" font-size="8.5" fill="#C9A84C" opacity=".4" text-anchor="middle">Imam na mimbaru — hutba (predavanje)</text>
+</svg>`
+
+};/ ═══════════════════════════════════════════════
+//  PRAYER DATA
+// ═══════════════════════════════════════════════
+const PRAYERS = {
+sabah:{
+  name:"Sabah Namaz", arabic:"صَلَاةُ الفَجْر", icon:"🌅", rakaati:2, dzehrijski:true,
+  time:"Od sabahskog ezana do izlaska sunca",
+  desc:"Sabah (Fajr) je prvi od pet dnevnih namaza. Klanja se tiho u srcu ali naglas. Farzi su 2 rekata, oba se uče naglas.",
+  special:null,
+  steps:[
+    {title:"Nijet — Namjera",arabic:"النِّيَّة",ill:"niyyet",
+     labels:["Srcem","Ka kibli","Stojeći"],
+     desc:"Nijet (namjera) čini se u srcu — dovoljno je svjesno znati koji namaz klanjamo. Ne mora se izgovarati naglas, ali može radi pojašnjenja. Okrenemo se prema kibli (smjer Mekke), stopala u širini ramena.",
+     dua:{ar:"نَوَيْتُ أَنْ أُصَلِّيَ فَرْضَ صَلَاةِ الصُّبْحِ لِلَّهِ تَعَالَى",bs:"Newejtu en usallije farda salatis-subhi lillahi te'ala",mng:"Namjeravam klanjati farz sabah namaza, radi Allaha Uzvišenog"},
+     note:null},
+    {title:"Početni Tekbir (Iftitah)",arabic:"تَكْبِيرَةُ الإِفْتِتَاح",ill:"tekbir",
+     labels:["Ruke do ušiju","Palčevi uz uši","Početak namaza"],
+     desc:"Dižemo obje ruke do visine ušiju — palčevi blizu ušnih resica, dlanovi okrenuti prema kibli. Izgovaramo 'Allahu Ekber' i spuštamo ruke. Muškarci vežu ispod pupka (desna na lijevu), žene na prsima.",
+     dua:{ar:"اَللهُ أَكْبَر",bs:"Allahu Ekber",mng:"Allah je Najveći — ovim počinje namaz"},
+     note:"Tekbirom ulazimo u namaz. Od ovog trenutka zabranjeno je govoriti, gledati okolo i praviti nepotrebne pokrete."},
+    {title:"Kijam — Subhaneke, Fatiha i Sura",arabic:"القِيَام",ill:"kijam",
+     labels:["Ruke vezane","Učenje naglas","Pogled prema sedždi"],
+     desc:"Stojimo s vezanim rukama. Učimo Subhaneke (samo u 1. rekatu), zatim Euzu-bismillu pa Fatihu. Nakon Fatihe učimo još jednu suru ili ajete. Sabah se uči NAGLAS.",
+     dua:{ar:"سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَهَ غَيْرُكَ",bs:"Subhanakellahumme ve bihamdike ve tebarekesmuke ve te'ala džedduke ve la ilahe gajruk",mng:"Hvaljen neka si Allahu, i hvala Ti. Blagoslovljeno je Tvoje ime, veličanstven Tvoj sjaj, nema boga osim Tebe. (Subhaneke)"},
+     note:"Sabah je džehrijski namaz — Fatiha i sura uče se naglas. Fatiha je obavezna (farz) u svakom rekatu."},
+    {title:"Ruku' (pregibanje) — Pregibanje u struk",arabic:"الرُّكُوع",ill:"ruku",
+     labels:["90° kut","Leđa ravna","Ruke na koljenima"],
+     desc:"Na tekbir 'Allahu Ekber' pregibamo se dok leđa i glava ne budu u ravnoj liniji — pod 90°. Dlanovima hvatamo koljena, prsti su rašireni. Glava ravna s leđima — ne gore, ne dolje. Učimo tesbih 3 puta.",
+     dua:{ar:"سُبْحَانَ رَبِّيَ الْعَظِيم",bs:"Subhane Rabbiyal-Azim",mng:"Hvaljen neka je moj Gospodar Veličanstveni (3 puta minimum)"},
+     note:null},
+    {title:"Uspravak iz Rukua (I'tidal — ispravljanje)",arabic:"الاعتِدَال",ill:"itidal",
+     labels:["Uspravno stajanje","Ruke uz tijelo","Kratko stajanje (vadžib)"],
+     desc:"Dižemo se govoreći 'Semi'Allahu limen hamideh'. Kad se potpuno uspravimo, dodajemo 'Rabbena lekel hamd'. Kratak trenutak stajanja je vadžib (obaveza) (obaveza).",
+     dua:{ar:"سَمِعَ اللهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا لَكَ الحَمْد",bs:"Semi'Allahu limen hamideh ۝ Rabbena lekel hamd",mng:"Allah čuje onoga ko Ga hvali ۝ Gospodaru naš, Tebi pripada hvala"},
+     note:null},
+    {title:"Prva Sedžda",arabic:"السَّجْدَةُ الأُولَى",ill:"sedzda",
+     labels:["7 dijelova na tlu","Čelo i nos","Laktovi gore"],
+     desc:"Na tekbir padamo na sedždu — 7 dijelova dodiruju tlo: čelo (s nosom), oba dlana, oba koljena i vrhovi prstiju obje noge. Prsti ruku okrenuti ka kibli. Laktovi su ODIGNUTI od poda. Učimo tesbih 3 puta.",
+     dua:{ar:"سُبْحَانَ رَبِّيَ الأَعْلَى",bs:"Subhane Rabbiyal-E'ala",mng:"Hvaljen neka je moj Gospodar Uzvišeni (3 puta minimum)"},
+     note:"Sedžda je trenutak najveće blizine Allahu. Preporučuje se što više dove i zikra u sedždi."},
+    {title:"Džulus — Sjedenje između sedždi",arabic:"الجُلُوس",ill:"dzelek",
+     labels:["Iftirash (sjedenje na lijevoj nozi)","Kratko sjedenje","Kratak stanko"],
+     desc:"Između dvije sedžde kratko sjedimo (džulus (kratko sjedenje između sedždi)). Lijeva noga je položena, desna uspravna s prstima prema kibli. Ruke položene na bedra. Učimo kraću dovu.",
+     dua:{ar:"رَبِّ اغْفِرْ لِي",bs:"Rabbighfirli",mng:"Gospodaru moj, oprosti mi"},
+     note:null},
+    {title:"Druga Sedžda",arabic:"السَّجْدَةُ الثَّانِيَة",ill:"sedzda",
+     labels:["Isto kao prva","7 dijelova","3× tesbih"],
+     desc:"Ponavljamo sedždu identično kao prvu — isti položaj, isti tesbih. Ovo završava PRVI REKAT. Na tekbir ustajemo za drugi rekat.",
+     dua:{ar:"سُبْحَانَ رَبِّيَ الأَعْلَى",bs:"Subhane Rabbiyal-E'ala",mng:"Hvaljen neka je moj Gospodar Uzvišeni (3 puta)"},
+     note:null},
+    {title:"Drugi Rekat — Fatiha i Sura",arabic:"الرَّكْعَةُ الثَّانِيَة",ill:"kijam",
+     labels:["Bez Subhaneke","Fatiha + Sura","Naglas"],
+     desc:"U drugom rekatu učimo samo Bismillu, Fatihu i suru (bez Subhanekea!). Isti slijed: kijam → ruku → uspravak → dvije sedžde kao u prvom rekatu.",
+     dua:{ar:"بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيم",bs:"Bismillahir-rahmanir-rahim",mng:"U ime Allaha, Milostivog, Samilosnog — pa Fatiha i sura"},
+     note:null},
+    {title:"Ka'da — Završno sjedenje (Ettehijjatu, Salavat, Dova)",arabic:"القَعْدَةُ الأَخِيرَة",ill:"kade",
+     labels:["Ettehijjatu","Salavat","Dova"],
+     desc:"Nakon sedždi drugog rekata sjedimo za ka'du. Učimo Ettehijjatu (kažiprst gore kod 'illAllah'), pa Ibrahimov salavat i dovu po izboru. Ovo je završno sjedenje.",
+     dua:{ar:"اَلتَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، اَلسَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ، اَلسَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللهِ الصَّالِحِيْنَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",bs:"Ettehijjatu lillahi ves-salevatu vet-tajjibatu, es-selamu alejke ejjuhen-nebijju ve rahmetullahi ve berekatuhu, es-selamu alejna ve 'ala ibadillahis-salihin, ešhedu en la ilahe illAllahu ve ešhedu enne Muhammeden abduhu ve resuluhu",mng:"Sve počasti, molitve i dobra dela su Allahovi. Mir neka je na tebe, o Vjerovjesniče, i Allahova milost i blagoslov. Mir neka je na nas i na sve Allahove dobre robove. Svjedočim da nema boga osim Allaha i da je Muhammed Njegov rob i Poslanik."},
+     note:null},
+    {title:"Selam — Završetak namaza",arabic:"التَّسْلِيم",ill:"selam",
+     labels:["Desno pa lijevo","Glava u sjedećem položaju","Namaz završen"],
+     desc:"Okrenemo glavu desno govoreći selam, pa lijevo govoreći selam. Time namaz završava. Preporučuje se ostati malo i praviti zikr: Subhanallah (33×), Elhamdulillah (33×), Allahu Ekber (33×).",
+     dua:{ar:"اَلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ",bs:"Es-selamu alejkum ve rahmetullah",mng:"Mir neka je na vas i Allahova milost (desno, pa lijevo)"},
+     note:"Nakon selama preporuča se dova i zikr: 33× Subhanallah, 33× Elhamdulillah, 33× Allahu Ekber."}
+  ]
+},
+
+podne:{
+  name:"Podne Namaz", arabic:"صَلَاةُ الظُّهْر", icon:"☀️", rakaati:4, dzehrijski:false,
+  time:"Od prolaska zenita do ikindije",
+  desc:"Podne (Zuhr) ima 4 rekata farza. Klanja se TIHO (sirr). U 1. i 2. rekatu Fatiha + sura, u 3. i 4. samo Fatiha.",
+  special:null,
+  steps:[
+    {title:"Nijet za Podne",arabic:"نِيَّةُ الظُّهْر",ill:"niyyet",labels:["Srcem","Ka kibli","4 rekata"],
+     desc:"Namjeravamo klanjati farz podne namaza. Podne je sirr (tihi) namaz — Fatiha i sura uče se tiho.",
+     dua:{ar:"نَوَيْتُ أَنْ أُصَلِّيَ فَرْضَ صَلَاةِ الظُّهْرِ لِلَّهِ تَعَالَى",bs:"Newejtu en usallije farda salatiz-zuhri lillahi te'ala",mng:"Namjeravam klanjati farz podne namaza, radi Allaha Uzvišenog"},note:null},
+    {title:"Tekbir i 1. Rekat (tiho)",arabic:"تَكْبِير + الرَّكْعَة الأُولَى",ill:"tekbir",labels:["Tiho učenje","Fatiha + Sura","Ruku i sedžde"],
+     desc:"Iftitah tekbir, vezane ruke — Subhaneke (samo ovdje), Bismilla, Fatiha i sura TIHO. Ruku, uspravak, dvije sedžde.",
+     dua:{ar:"اَللهُ أَكْبَر",bs:"Allahu Ekber — tekbir pa tiho učenje",mng:"Podne i ikindija su tihi (sirr) namazi"},note:null},
+    {title:"2. Rekat i Ka'da Ula (kratko sjedenje)",arabic:"الرَّكْعَة الثَّانِيَة + القَعْدَةُ الأُولَى",ill:"dzelek",labels:["Fatiha + Sura","Kratko sjedenje (Ka'da ula)","Samo Ettehijjatu"],
+     desc:"Drugi rekat isto kao prvi (bez Subhanekea). Nakon sedždi SJEDIMO za Ka'du ulu (prvo/kratko sjedenje) — učimo SAMO Ettehijjatu do kraja šehadeta. BEZ Salavata ovdje! Ustajemo za 3. rekat.",
+     dua:{ar:"اَلتَّحِيَّاتُ... أَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",bs:"Ettehijjatu... do kraja šehadeta, pa ustajemo",mng:"Ka'da ula — samo Ettehijjatu, bez Salavata"},
+     note:"Važno: u Ka'di uli NE učimo Salavat ni dovu — samo Ettehijjatu do kraja, pa tekbir i ustajemo."},
+    {title:"3. i 4. Rekat — Samo Fatiha",arabic:"الرَّكْعَتَانِ الأَخِيرَتَان",ill:"kijam",labels:["Samo Fatiha","Bez sure","Tiho"],
+     desc:"U trećem i četvrtom rekatu učimo samo Bismillu i Fatihu — BEZ SURE. Ruku, uspravak i sedžde identični. Između 3. i 4. rekatu nema sjedenja.",
+     dua:{ar:"بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيم ۝ اَلْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين...",bs:"Bismillah + Fatiha (tiho) — bez sure!",mng:"U 3. i 4. rekatu samo Fatiha, nema additional sure"},note:null},
+    {title:"Ka'da Ahira — Završno sjedenje (Ettehijjatu + Salavat + Dova)",arabic:"القَعْدَةُ الأَخِيرَة",ill:"kade",labels:["Ettehijjatu","Salavat","Dova"],
+     desc:"Nakon sedždi 4. rekata — Ka'da ahira (završno sjedenje): Ettehijjatu, Ibrahimov salavat i dova. Kažiprst gore kod 'illAllah'.",
+     dua:{ar:"اَللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّد",bs:"Allahumme salli ala Muhemmedin ve ala ali Muhammed...",mng:"Ibrahimov salavat pa dova"},note:null},
+    {title:"Selam",arabic:"التَّسْلِيم",ill:"selam",labels:["Desno","Lijevo","Kraj"],
+     desc:"Selamom na desno pa lijevo završavamo 4-rekatni podne namaz.",
+     dua:{ar:"اَلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ",bs:"Es-selamu alejkum ve rahmetullah",mng:"Selam desno pa lijevo"},note:null}
+  ]
+},
+
+ikindija:{
+  name:"Ikindija Namaz", arabic:"صَلَاةُ الْعَصْر", icon:"🌤", rakaati:4, dzehrijski:false,
+  time:"Od ikindijskog vremena do zalaska sunca",
+  desc:"Ikindija (Asr) ima 4 rekata farza. Klanja se TIHO. Identičan redoslijed kao podne namaz.",
+  special:null,
+  steps:[
+    {title:"Nijet za Ikindiju",arabic:"نِيَّةُ الْعَصْر",ill:"niyyet",labels:["Srcem","4 rekata","Tiho"],
+     desc:"Namjeravamo klanjati farz ikindija namaza. Redoslijed je identičan podne namazu — 4 rekata, tiho (sirr).",
+     dua:{ar:"نَوَيْتُ أَنْ أُصَلِّيَ فَرْضَ صَلَاةِ الْعَصْرِ لِلَّهِ تَعَالَى",bs:"Newejtu en usallije farda salatel-asri lillahi te'ala",mng:"Namjeravam klanjati farz ikindija namaza, radi Allaha Uzvišenog"},note:null},
+    {title:"1-2. Rekat + Ka'da Ula (kratko sjedenje)",arabic:"الرَّكْعَتَانِ الأُولَيَان",ill:"tekbir",labels:["Tiho","Kratko sjedenje (Ka'da ula)","Samo Ettehijjatu"],
+     desc:"Isti slijed kao podne: tekbir, kijam (Subhaneke u 1., Fatiha+sura u oba) tiho, ruku, sedžde. Ka'da ula samo s Ettehijjatuom.",
+     dua:{ar:"اَلتَّحِيَّاتُ... (samo Ettehijjatu)",bs:"Ka'da ula — Ettehijjatu pa ustajemo",mng:"Identično podne namazu"},note:null},
+    {title:"3-4. Rekat + Ka'da Ahira (završno sjedenje) + Selam",arabic:"الرَّكْعَتَانِ الأَخِيرَتَان",ill:"selam",labels:["Samo Fatiha","Završno sjedenje (Ka'da ahira)","Selam"],
+     desc:"3. i 4. rekat samo Fatiha (bez sure), tiho. Ka'da ahira (završno sjedenje) s Ettehijjatuom, Salavatom i dovom. Selam desno-lijevo.",
+     dua:{ar:"اَلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ",bs:"Es-selamu alejkum ve rahmetullah",mng:"Ikindija je identična podne namazu"},
+     note:"Ikindija je 'srednji namaz' (es-salatil-vusta) koji se posebno spominje u Kur'anu (2:238). Paziti na ovu obavezu!"}
+  ]
+},
+
+aksam:{
+  name:"Akšam Namaz", arabic:"صَلَاةُ الْمَغْرِب", icon:"🌇", rakaati:3, dzehrijski:true,
+  time:"Od zalaska sunca do nestanka crvene zore",
+  desc:"Akšam (Magrib) ima 3 rekata farza. 1. i 2. rekat su NAGLAS (džehrijski), 3. rekat je tih.",
+  special:null,
+  steps:[
+    {title:"Nijet za Akšam",arabic:"نِيَّةُ الْمَغْرِب",ill:"niyyet",labels:["3 rekata","1-2 naglas","3. tih"],
+     desc:"Namjeravamo klanjati farz akšam namaza. Akšam ima posebnost — 3 rekata, od kojih su prva dva naglas.",
+     dua:{ar:"نَوَيْتُ أَنْ أُصَلِّيَ فَرْضَ صَلَاةِ الْمَغْرِبِ لِلَّهِ تَعَالَى",bs:"Newejtu en usallije farda salatel-magribi lillahi te'ala",mng:"Namjeravam klanjati farz akšam namaza, radi Allaha Uzvišenog"},note:null},
+    {title:"1. Rekat — NAGLAS",arabic:"الرَّكْعَةُ الأُولَى جَهْرِيَّة",ill:"kijam",labels:["Naglas","Subhaneke","Fatiha + Sura"],
+     desc:"Tekbir, kijam — Subhaneke, Bismilla, Fatiha i sura učimo NAGLAS. Preporučene sure: Ihlas, Felek, Nas ili duže. Ruku, uspravak, sedžde.",
+     dua:{ar:"قُلْ هُوَ اللهُ أَحَد",bs:"Kul huvAllahu ehad... (Ihlas — primjer sure za akšam)",mng:"Sure se uče naglas u akšamu"},note:null},
+    {title:"2. Rekat NAGLAS + Ka'da Ula (kratko sjedenje)",arabic:"الرَّكْعَةُ الثَّانِيَة + القَعْدَةُ",ill:"dzelek",labels:["Naglas","Kratko sjedenje (Ka'da ula)","Samo Ettehijjatu"],
+     desc:"Drugi rekat identičan — Bismilla, Fatiha i sura NAGLAS, ruku, sedžde. Ka'da ula samo Ettehijjatu pa ustajemo.",
+     dua:{ar:"اَلتَّحِيَّاتُ... (Ettehijjatu pa ustajemo)",bs:"Ka'da ula samo Ettehijjatu",mng:"Ustajemo za 3. rekat"},note:null},
+    {title:"3. Rekat — TIHO (samo Fatiha)",arabic:"الرَّكْعَةُ الثَّالِثَة سِرِّيَّة",ill:"kijam",labels:["Tiho","Samo Fatiha","Nema sure"],
+     desc:"Treći rekat klanjamo tiho — samo Bismilla i Fatiha, BEZ sure. Ruku i sedžde identični.",
+     dua:{ar:"بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيم ۝ اَلْفَاتِحَة (tiho)",bs:"Bismillah + Fatiha tiho — bez sure",mng:"Samo Fatiha u 3. rekatu, tiho"},note:null},
+    {title:"Ka'da Ahira (završno sjedenje) i Selam",arabic:"القَعْدَةُ الأَخِيرَة",ill:"selam",labels:["Ettehijjatu","Salavat","Selam"],
+     desc:"Ka'da ahira: Ettehijjatu, Salavat i dova. Selam desno pa lijevo.",
+     dua:{ar:"اَلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ",bs:"Es-selamu alejkum ve rahmetullah",mng:"Završni selam — akšam namaz završen"},note:null}
+  ]
+},
+
+jacija:{
+  name:"Jacija Namaz", arabic:"صَلَاةُ الْعِشَاء", icon:"🌙", rakaati:4, dzehrijski:true,
+  time:"Od nestanka crvene zore do zore",
+  desc:"Jacija (Isha) ima 4 rekata farza. 1. i 2. rekat su NAGLAS, 3. i 4. su tihi. Preporučeno klanjati do ponoći.",
+  special:null,
+  steps:[
+    {title:"Nijet za Jaciju",arabic:"نِيَّةُ الْعِشَاء",ill:"niyyet",labels:["4 rekata","1-2 naglas","3-4 tiho"],
+     desc:"Namjeravamo klanjati farz jacija namaza. Jacija je posljednji dnevni namaz.",
+     dua:{ar:"نَوَيْتُ أَنْ أُصَلِّيَ فَرْضَ صَلَاةِ الْعِشَاءِ لِلَّهِ تَعَالَى",bs:"Newejtu en usallije farda salatel-ishei lillahi te'ala",mng:"Namjeravam klanjati farz jacija namaza, radi Allaha Uzvišenog"},note:null},
+    {title:"1-2. Rekat NAGLAS + Ka'da Ula (kratko sjedenje)",arabic:"الرَّكْعَتَانِ الجَهْرِيَّتَان",ill:"kijam",labels:["Naglas","Fatiha+Sura","Kratko sjedenje (Ka'da ula)"],
+     desc:"Tekbir, 1. rekat: Subhaneke, Fatiha i sura NAGLAS, ruku, sedžde. 2. rekat: Fatiha+sura naglas, ruku, sedžde. Ka'da ula samo Ettehijjatu.",
+     dua:{ar:"اَلتَّحِيَّاتُ... (Ettehijjatu pa ustajemo)",bs:"Ka'da ula — Ettehijjatu pa ustajemo za 3. rekat",mng:"Prva dva rekata naglas"},note:null},
+    {title:"3-4. Rekat TIHO (samo Fatiha)",arabic:"الرَّكْعَتَانِ السِّرِّيَّتَان",ill:"kijam",labels:["Tiho","Samo Fatiha","Ruku i sedžde"],
+     desc:"3. i 4. rekat tiho — samo Bismilla i Fatiha, bez sure. Ruku, uspravak i sedžde identični.",
+     dua:{ar:"اَلْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين... (tiho)",bs:"Fatiha tiho — u 3. i 4. rekatu",mng:"Zadnja dva rekata su tiha"},note:null},
+    {title:"Ka'da Ahira — Završno sjedenje (Ettehijjatu + Salavat)",arabic:"القَعْدَةُ الأَخِيرَة",ill:"kade",labels:["Ettehijjatu","Salavat","Dova"],
+     desc:"Ettehijjatu, Ibrahimov salavat i dova. Može se učiti 'Rabbena atina fid-dunja...'",
+     dua:{ar:"رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّار",bs:"Rabbena atina fid-dun'ja haseneten ve fil-ahireti haseneten ve kına azaben-nar",mng:"Gospodaru naš, daj nam dobro na ovom i na onom svijetu i sačuvaj nas vatrene patnje"},note:null},
+    {title:"Selam",arabic:"التَّسْلِيم",ill:"selam",labels:["Desno","Lijevo","Kraj dana"],
+     desc:"Selamom završavamo jaciju — posljednji namaz dana. Preporuča se učiti VitrI namaz nakon jacije (3 vitir rekata).",
+     dua:{ar:"اَلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ",bs:"Es-selamu alejkum ve rahmetullah",mng:"Selam desno pa lijevo — kraj dnevnih namaza"},
+     note:"Nakon jacije preporuča se klanjati Vitir namaz (3 rekata — vadžib po hanefijskom mezhebu)."}
+  ]
+},
+
+dzuma:{
+  name:"Džuma Namaz", arabic:"صَلَاةُ الْجُمُعَة", icon:"🕌", rakaati:2, dzehrijski:true,
+  time:"Petkom u podne-ikindijsko vrijeme, uz učenje hutbe",
+  desc:"Džuma (Jumu'a) je sedmični džemat namaz koji se klanja petkom. Zamjenjuje podne farz. Obavezan je za punoljetne muškarce. Ima 2 rekata farza — klanja se NAGLAS. Oba rekata nalik sabahu.",
+  special:"dzuma",
+  steps:[
+    {title:"Uslovi za Džumu",arabic:"شُرُوطُ الْجُمُعَة",ill:"hutba",labels:["Punoljetan muškarac","Džemat (zajednička molitva)","Petkom"],
+     desc:"Džuma je farz-ajn za punoljetne, slobodne i zdravstveno sposobne muškarce koji borave u gradu/selu. Klanja se u džematu sa imamom. Minimalni broj za džumu je 3 osobe (po hanefijama).",
+     dua:{ar:"يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا نُودِيَ لِلصَّلَاةِ مِن يَوْمِ الْجُمُعَةِ",bs:"Ja ejjuhelleziyne amenu iza nudije lis-salati min jewmil-džumu'ati...",mng:"O vi koji vjerujete, kada se na džumu namaz poziva... (Kur'an 62:9)"},
+     note:"Džuma zamjenjuje podne namaz. Ko propusti džumu bez opravdanog razloga, počinio je veliki grijeh."},
+    {title:"Gusul i Dolazak u Džamiju",arabic:"الْغُسْل وَالتَّبْكِير",ill:"niyyet",labels:["Gusul petkom","Rano u džamiju","Tiho učiti Kur'an"],
+     desc:"Preporučuje se (sunnet) gusul petkom, oblačenje najljepše odjeće i rano dolaženje u džamiju. Dok se čeka džuma, tiho se uče dova i Kur'an. Ne hodati po leđima klanjača.",
+     dua:{ar:"اَللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّد",bs:"Učiti salavate dok se čeka džuma",mng:"Petkom se preporučuje mnogo salavata na Poslanika ﷺ"},
+     note:"Sunneti petka: gusul, misvak, lijepa odjeća, rano u džamiju, salavati, učiti Kur'an (posebno suru El-Kehf)."},
+    {title:"Prva Hutba (Predavanje)",arabic:"الْخُطْبَةُ الْأُولَى",ill:"hutba",labels:["Imam na mimbaru","Slušanje obaveza","Tišina"],
+     desc:"Imam izlazi na mimbar i drži HUTBU (predavanje). Slušanje hutbe je OBAVEZA — zabranjeno je pričati, čak i odgovarati na selam tokom hutbe! Hutba je na arapskom (ali može biti i na lokalnom jeziku).",
+     dua:{ar:"",bs:"Slušamo pažljivo hutbu",mng:"Hutba je khutbatul-džumu'a — uvodna i završna. Između je kratak odmor (ime)."},
+     note:"Tokom hutbe je zabranjeno: pričati, klanjati (osim ako tek dođeš), jesti, piti. Gledati imama je sunnet."},
+    {title:"Ezan i Ikamet",arabic:"الْأَذَانُ وَالْإِقَامَة",ill:"niyyet",labels:["Ezan","Ikamet","Džemat se reða"],
+     desc:"Nakon hutbe oglašava se ezan i ikamet. Džemat se poređa u redove — redno punjenje redova je sunnet. Ima se pazi na ravnost i zatvorenost redova.",
+     dua:{ar:"حَيَّ عَلَى الصَّلَاة • حَيَّ عَلَى الْفَلَاح",bs:"Hajje ales-salah • Hajje alel-felah",mng:"Dođite na namaz • Dođite k uspjehu (ezan)"},
+     note:null},
+    {title:"Nijet za Džumu",arabic:"نِيَّةُ صَلَاةِ الْجُمُعَة",ill:"niyyet",labels:["2 rekata farza","Džemat (zajednička molitva)","Iza imama"],
+     desc:"Namjeravamo klanjati farz džuma namaza za imamom. Džuma se klanja u džematu — iza imama. 2 rekata su farz.",
+     dua:{ar:"نَوَيْتُ أَنْ أُصَلِّيَ فَرْضَ صَلَاةِ الْجُمُعَةِ لِلَّهِ تَعَالَى",bs:"Newejtu en usallije farda salatel-džumu'ati lillahi te'ala",mng:"Namjeravam klanjati farz džuma namaza, radi Allaha Uzvišenog"},note:null},
+    {title:"Iftitah Tekbir i 1. Rekat NAGLAS",arabic:"تَكْبِير + الرَّكْعَةُ الأُولَى",ill:"tekbir",labels:["Imam uči naglas","Džemat sluša","Fatiha + Sura"],
+     desc:"Imam izgovori tekbir, džemat prati. Imam uči Fatihu i suru NAGLAS — džemat tiho sluša. Preporuča se da imam u 1. rekatu uči suru El-A'la (Sebbihi), u 2. suru El-Gašija. Ruku i sedžde zajedno s imamom.",
+     dua:{ar:"سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى",bs:"Imam uči: Sebbihisme Rabbikel-E'la... (El-A'la)",mng:"Džemat prati imama u pokretima"},
+     note:"U džematu pratimo imama: tek kad imam kaže tekbir, i mi idemo u pokret. Ako zakasnimo na rekat, nadoknađujemo ga sami."},
+    {title:"2. Rekat + Ka'da (završno sjedenje) + Selam",arabic:"الرَّكْعَةُ الثَّانِيَة + الْقَعْدَة",ill:"selam",labels:["Imam naglas","Završno sjedenje (Ka'da)","Selam"],
+     desc:"Drugi rekat: imam uči Fatihu i suru naglas (npr. El-Gašija). Ruku, sedžde. Ka'da — Ettehijjatu, Salavat i dova. Selam.",
+     dua:{ar:"هَلْ أَتَاكَ حَدِيثُ الْغَاشِيَة",bs:"Imam uči: Hel etake hadisul-gašijeh... (El-Gašija)",mng:"Džemat prati, u ka'di uči Ettehijjatu i Salavat"},
+     note:null},
+    {title:"Nakon Džume — Sunnet i Zikr",arabic:"بَعْدَ صَلَاةِ الْجُمُعَة",ill:"kade",labels:["6 rekata sunneta","Zikr i dova","El-Kehf"],
+     desc:"Nakon džume preporuča se: 6 rekata ba'dijje (4+2 ili 6 zajedno), zikr, salavati i dova. Preporuča se učiti suru El-Kehf tokom petka — od sabaha do akšama.",
+     dua:{ar:"اَللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَام",bs:"Allahumme entes-Selamu ve minkes-Selamu tebarekte ja Zel-Dželali vel-ikram",mng:"Allahu, Ti si Mir i od Tebe je mir, blagoslovljen neka si, o Veličanstveni i Plemeniti"},
+     note:"Petak je 'seid ul-ejjam' — gospodar dana. Ko umre petkom ili noću petka, čuvan je od kazne kabura in-ša-Allah."}
+  ]
+}
+};
+
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+let cur = 'sabah', open = 0, checked = {};
+
+// ═══════════════════════════════════════════════
+//  STARS
+// ═══════════════════════════════════════════════
+(function(){
+  const c = document.getElementById('stars');
+  for(let i=0;i<100;i++){
+    const d = document.createElement('div'); d.className='s';
+    const sz = Math.random()*2.5+.5;
+    d.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*4+2).toFixed(1)}s;--dl:-${(Math.random()*5).toFixed(1)}s;--o:${(Math.random()*.7+.1).toFixed(2)}`;
+    c.appendChild(d);
+  }
+})();
+
+// ═══════════════════════════════════════════════
+//  SELECT & RENDER
+// ═══════════════════════════════════════════════
+function sel(name, btn){
+  cur=name; open=0;
+  document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function toggle(i){
+  open = open===i ? -1 : i;
+  renderSteps();
+  updateProg();
+}
+
+function toggleCheck(key){
+  checked[key] = !checked[key];
+  renderChecklist();
+}
+
+function updateProg(){
+  const p = PRAYERS[cur];
+  const pct = open>=0 ? ((open+1)/p.steps.length*100) : 0;
+  const el = document.getElementById('pf');
+  if(el) el.style.width = pct+'%';
+}
+
+function render(){
+  const p = PRAYERS[cur];
+  const dzumaNote = p.special==='dzuma' ? `
+    <div class="dzuma-note">
+      <h4>🕌 Razlike Džume od Podne</h4>
+      <p>
+        ✦ <strong>2 rekata farza</strong> (vs. 4 kod podne) — ali oba NAGLAS<br>
+        ✦ <strong>Hutba je farz</strong> — preduvjet za namaz; slušanje je obaveza<br>
+        ✦ <strong>Obavezan džemat</strong> — ne može se klanjati sam kod kuće<br>
+        ✦ <strong>Posebno vrijeme</strong> — džuma se ne može naklanjati, samo pokajanje<br>
+        ✦ <strong>Ko propusti 3 džume</strong> uzastopce bez razloga — na srcu mu se stavi pečat (hadis)
+      </p>
+    </div>` : '';
+
+  const badge2 = p.dzehrijski ? `<span class="rbadge" style="margin-left:0">🔊 Djelimično naglas</span>` : `<span class="rbadge" style="margin-left:0">🤫 Tiho (sirr)</span>`;
+
+  document.getElementById('app').innerHTML = `
+    ${dzumaNote}
+    <div class="pinfo">
+      <div class="picon">${p.icon}</div>
+      <div class="pinfo-text">
+        <h2>${p.name}</h2>
+        <div class="pinfo-ar">${p.arabic}</div>
+        <p>${p.desc}</p>
+        <p class="ptime">🕐 ${p.time}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+          <span class="rbadge" style="margin:0">🕌 ${p.rakaati} rekata farza</span>
+          ${badge2}
+        </div>
+      </div>
+    </div>
+    <div class="prog-row">
+      <span class="prog-label">Koraci</span>
+      <div class="prog-wrap"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+      <span class="prog-text" id="pt">0 / ${p.steps.length}</span>
+    </div>
+    <div class="steps" id="slist"></div>
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <button class="nb" id="pb" onclick="nav(-1)">← Prethodni</button>
+      <button class="nb" id="nb2" onclick="nav(1)">Sljedeći →</button>
+    </div>
+    <div class="check-panel">
+      <div class="check-title">📋 Moj Napredak — Šta sam naučio/la</div>
+      <div class="check-grid" id="cklist"></div>
+    </div>
+  `;
+  renderSteps();
+  renderChecklist();
+  updateProg();
+}
+
+function renderSteps(){
+  const p = PRAYERS[cur];
+  const el = document.getElementById('slist');
+  if(!el) return;
+  el.innerHTML = p.steps.map((s,i)=>{
+    const isOpen = open===i;
+    const labels = (s.labels||[]).map(l=>`<span class="body-label">${l}</span>`).join('');
+    const body = isOpen ? `
+      <div class="sbody">
+        <div class="illus">${IL[s.ill]||IL.kijam}</div>
+        ${s.labels?.length ? `<div class="labels-row">${labels}</div>` : ''}
+        <p class="sdesc">${s.desc}</p>
+        ${s.dua ? `<div class="dua-box">
+          <div class="dua-lbl">📿 Dova / Zikr</div>
+          ${s.dua.ar ? `<div class="dua-ar">${s.dua.ar}</div>` : ''}
+          <div class="dua-bs">${s.dua.bs}</div>
+          <div class="dua-mng">✦ ${s.dua.mng}</div>
+        </div>` : ''}
+        ${s.note ? `<div class="note-box">💡 <strong>Napomena:</strong> ${s.note}</div>` : ''}
+      </div>` : '';
+    return `<div class="sc${isOpen?' open':''}" onclick="toggle(${i})">
+      <div class="sh">
+        <div class="snum">${i+1}</div>
+        <div class="stw">
+          <div class="stitle">${s.title}</div>
+          <div class="sar">${s.arabic}</div>
+        </div>
+        <div class="sarr">▾</div>
+      </div>
+      ${body}
+    </div>`;
+  }).join('');
+
+  const pt = document.getElementById('pt');
+  if(pt) pt.textContent = `${open>=0?open+1:0} / ${p.steps.length}`;
+  const pb = document.getElementById('pb'); if(pb) pb.disabled = open<=0;
+  const nb2 = document.getElementById('nb2'); if(nb2) nb2.disabled = open>=p.steps.length-1;
+}
+
+function renderChecklist(){
+  const p = PRAYERS[cur];
+  const el = document.getElementById('cklist');
+  if(!el) return;
+  el.innerHTML = p.steps.map((s,i)=>{
+    const k = `${cur}-${i}`;
+    const done = !!checked[k];
+    return `<div class="ck${done?' done':''}" onclick="toggleCheck('${k}')">
+      <div class="ck-dot"></div>
+      ${s.title}
+    </div>`;
+  }).join('');
+}
+
+function nav(d){
+  const p = PRAYERS[cur];
+  const n = open+d;
+  if(n>=0 && n<p.steps.length){
+    open=n; renderSteps(); updateProg();
+    setTimeout(()=>{
+      const cs = document.querySelectorAll('.sc');
+      if(cs[open]) cs[open].scrollIntoView({behavior:'smooth',block:'center'});
+    },60);
+  }
+}
+
+// initial render
+render();
+// open first step
+setTimeout(()=>{ open=0; renderSteps(); updateProg(); },80);
+</script>
+
+<!-- PWA Install Banner (Android/Desktop) -->
+<div id="pwa-banner">
+  <div class="pwa-icon">🕌</div>
+  <div class="pwa-text">
+    <strong>Instaliraj aplikaciju</strong>
+    <span>Radi i bez interneta — uvijek pri ruci</span>
+  </div>
+  <div class="pwa-btns">
+    <button class="pwa-install" onclick="installPWA()">Instaliraj</button>
+    <button class="pwa-dismiss" onclick="dismissBanner()">✕</button>
+  </div>
+</div>
+
+<!-- iOS Install Instructions -->
+<div id="ios-banner">
+  <div class="ios-title">🕌 Instaliraj na iPhone/iPad</div>
+  <div class="ios-steps">
+    1. Pritisni <span>Dijeli ↑</span> dugme u Safariju<br>
+    2. Odaberi <span>"Dodaj na početni ekran"</span><br>
+    3. Pritisni <span>"Dodaj"</span> — gotovo! ✓
+  </div>
+  <button class="ios-close" onclick="dismissIOS()">Razumijem</button>
+</div>
+
+<!-- Offline badge -->
+<div id="offline-badge">📵 Offline mod</div>
+
+<!-- Install success toast -->
+<div id="install-toast">✅ Aplikacija instalirana! Pronađi je na ekranu.</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  PWA — Service Worker & Install
+// ═══════════════════════════════════════════════
+let deferredPrompt = null;
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => {
+        console.log('[PWA] Service Worker registriran:', reg.scope);
+        reg.addEventListener('updatefound', () => {
+          const worker = reg.installing;
+          worker.addEventListener('statechange', () => {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('[PWA] Nova verzija dostupna');
+            }
+          });
+        });
+      })
+      .catch(err => console.log('[PWA] SW greška:', err));
+  });
+}
+
+// Offline/Online detection
+window.addEventListener('online', () => {
+  document.getElementById('offline-badge').classList.remove('show');
+});
+window.addEventListener('offline', () => {
+  document.getElementById('offline-badge').classList.add('show');
+});
+if (!navigator.onLine) {
+  document.getElementById('offline-badge').classList.add('show');
+}
+
+// ── Android/Desktop install prompt ──
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show banner after 3 seconds if not already dismissed
+  const dismissed = localStorage.getItem('pwa-dismissed');
+  if (!dismissed) {
+    setTimeout(() => {
+      document.getElementById('pwa-banner').classList.add('show');
+    }, 3000);
+  }
+});
+
+function installPWA() {
+  if (!deferredPrompt) return;
+  document.getElementById('pwa-banner').classList.remove('show');
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(choice => {
+    if (choice.outcome === 'accepted') {
+      showInstallToast();
+    }
+    deferredPrompt = null;
+  });
+}
+
+function dismissBanner() {
+  document.getElementById('pwa-banner').classList.remove('show');
+  localStorage.setItem('pwa-dismissed', '1');
+}
+
+// ── iOS Safari detection ──
+function isIOS() {
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+}
+function isInStandaloneMode() {
+  return window.matchMedia('(display-mode: standalone)').matches || 
+         window.navigator.standalone;
+}
+
+if (isIOS() && !isInStandaloneMode()) {
+  const iosDismissed = localStorage.getItem('ios-hint-dismissed');
+  if (!iosDismissed) {
+    setTimeout(() => {
+      document.getElementById('ios-banner').classList.add('show');
+    }, 4000);
+  }
+}
+function dismissIOS() {
+  document.getElementById('ios-banner').classList.remove('show');
+  localStorage.setItem('ios-hint-dismissed', '1');
+}
+
+// ── Install success event ──
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwa-banner').classList.remove('show');
+  showInstallToast();
+  deferredPrompt = null;
+});
+
+function showInstallToast() {
+  const toast = document.getElementById('install-toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ── Update vaktija title for PWA standalone ──
+if (isInStandaloneMode()) {
+  document.title = 'Nauči Namaz';
+}
+</script>
+
+</body>
+</html>
